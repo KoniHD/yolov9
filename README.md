@@ -1,18 +1,12 @@
 # YOLOv9
 
 Implementation of paper - [YOLOv9: Learning What You Want to Learn Using Programmable Gradient Information](https://arxiv.org/abs/2402.13616)
-Private Fork of Github Repo - [![Github] (https://badges.aleen42.com/src/github.svg)](https://github.com/WongKinYiu/yolov9)
+Private Fork of Github Repo - [![Github](https://badges.aleen42.com/src/github.svg)](https://github.com/WongKinYiu/yolov9)
 
 [![arxiv.org](http://img.shields.io/badge/cs.CV-arXiv%3A2402.13616-B31B1B.svg)](https://arxiv.org/abs/2402.13616)
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/kadirnar/Yolov9)
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/merve/yolov9)
 [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/KoniHD/yolov9/blob/main/train-yolov9.ipynb)
-
-<div align="center">
-    <a href="./">
-        <img src="./figure/performance.png" width="79%"/>
-    </a>
-</div>
 
 
 ## Performance 
@@ -157,6 +151,7 @@ Data preparation
 
 ``` shell
 bash scripts/get_coco.sh
+bash scripts/get_loco.sh
 ```
 
 * Download MS COCO dataset images ([train](http://images.cocodataset.org/zips/train2017.zip), [val](http://images.cocodataset.org/zips/val2017.zip), [test](http://images.cocodataset.org/zips/test2017.zip)) and [labels](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/coco2017labels-segments.zip). If you have previously used a different version of YOLO, we strongly recommend that you delete `train2017.cache` and `val2017.cache` files, and redownload [labels](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/coco2017labels-segments.zip) 
@@ -209,6 +204,8 @@ python detect.py --source './data/images/horses.jpg' --img 640 --device 0 --weig
 
 ## Citation
 
+This repo is a private fork from [WongKinYiu](https://github.com/WongKinYiu/yolov9)'s work on YOLOv9
+
 ```
 @article{wang2024yolov9,
   title={{YOLOv9}: Learning What You Want to Learn Using Programmable Gradient Information},
@@ -228,17 +225,7 @@ python detect.py --source './data/images/horses.jpg' --img 640 --device 0 --weig
 ```
 
 
-## Teaser
-
-Parts of code of [YOLOR-Based Multi-Task Learning](https://arxiv.org/abs/2309.16921) are released in the repository.
-
-<div align="center">
-    <a href="./">
-        <img src="./figure/multitask.png" width="99%"/>
-    </a>
-</div>
-
-#### Object Detection
+### Object Detection
 
 [`gelan-c-det.pt`](https://github.com/WongKinYiu/yolov9/releases/download/v0.1/gelan-c-det.pt)
 
