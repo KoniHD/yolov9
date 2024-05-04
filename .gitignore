@@ -1,2 +1,6 @@
 labels
 loco
+.mypy_cache
+.idx
+.vscode
+.fleet
