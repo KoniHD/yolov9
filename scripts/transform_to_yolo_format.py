@@ -42,6 +42,34 @@ def convert_bbox_coco2yolo(img_width, img_height, bbox):
 
     return [x, y, w, h]
 
+def convert_classid_coco2yolo(loco_id):
+    """
+    Convert class ID from COCO to YOLO format
+
+    Parameters
+    ----------
+    loco_id : int
+        class ID in LOCO format
+
+    Returns
+    -------
+    int
+        class ID in YOLO format
+    """
+    # LOCO class IDs are not sorted, YOLO class IDs are 0-indexed
+    if loco_id == 3:
+        return 0
+    elif loco_id == 5:
+        return 1
+    elif loco_id == 7:
+        return 2
+    elif loco_id == 10:
+        return 3
+    elif loco_id == 11:
+        return 4
+    else:
+        raise ValueError(f"Unknown class ID {loco_id}")
+
 # This script is used to transform the dataset to the YOLO format
 # For use in GitHub Codespaces use '/workspaces' instead of content
 def transform_images_to_yolo_format(directory='/content/yolov9/loco/images'):
@@ -117,7 +145,7 @@ def convert_json_to_yolo_txt(directory):
             anno_txt = os.path.join(directory, img_name.split(".")[0] + ".txt")
             with open(anno_txt, "w") as f:
                 for anno in anno_in_image:
-                    class_id = anno["category_id"]
+                    class_id = convert_classid_coco2yolo(anno["category_id"])
                     bbox_COCO = anno["bbox"]
                     x, y, w, h = convert_bbox_coco2yolo(img_width, img_height, bbox_COCO)
                     f.write(f"{class_id} {x:.6f} {y:.6f} {w:.6f} {h:.6f}\n")
