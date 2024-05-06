@@ -1,5 +1,9 @@
 labels
 loco
+loco.yaml
+InstancesIn_train.txt
+InstancesIn_val.txt
+InstancesIn_test.txt
 .mypy_cache
 .idx
 .vscode
