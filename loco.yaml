@@ -1,0 +1,10 @@
+train: ./loco/images/train
+val: ./loco/images/val
+
+nc: 5
+names:
+  3: small_load_carrier
+  5: forklift
+  7: pallet
+  10: stillage
+  11: pallet_truck

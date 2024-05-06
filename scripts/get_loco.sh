@@ -7,7 +7,7 @@
 d='./loco/labels'
 url='https://github.com/tum-fml/loco/archive/refs/heads/master.zip'
 f='loco-master.zip'
-echo 'Downloading labels' $url$f ' ...'
+echo 'Downloading labels from: ' $url$f
 curl -L $url -o $f && unzip -q $f && rm -r $f # download, unzip, remove in background
 
 # Move labels to correct directory
@@ -28,7 +28,7 @@ d='./loco/images' # unzip directory
 # unshortened link: https://webdisk.ads.mwn.de/Handlers/AnonymousDownload.ashx?folder=73e976ba&path=LOCO%5Cv1%5Cdataset.zip
 url='https://go.mytum.de/239870'
 f='dataset.zip'
-echo 'Downloading datasets' $url '...'
+echo 'Downloading datasets from: ' $url
 curl -L $url -o $f && unzip -q $f && rm -r $f # download, unzip, remove in background
 
 set1='subset-1'     # validation
