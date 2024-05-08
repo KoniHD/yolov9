@@ -1,3 +1,23 @@
+"""
+This script converts annotation data from LOCO format (COCO based) to YOLO format. It has two options:
+1. Extracting the images from subdirectories inside the `image` directory and moving them all in the root of `image`.
+    If a custom data split inside `images` of train, val and test is present the script will maintain this structure.
+2. Converting the annotations in JSON format (COCO style) to YOLO format.
+
+Parameters
+----------
+DIR : str
+    Directory path to dataset folder. It should contain the subdirectories `images` and `labels` with the images and annotations in COCO format.
+    This option must be provided in order for the script to work.
+convertImages : bool
+    If set to True, the script will extract images from subdirectories inside the `images` directory and move them all in the root of `images`.
+    If a custom data split inside `images` of train, val and test is present the script will maintain this structure.
+    Default is False.
+convert2yolo : bool
+    If set to True, the script will convert dataset annotations from COCO to YOLO format.
+    Default is False.
+"""
+
 import shutil, os
 import argparse
 import json
@@ -155,8 +175,9 @@ def parse_args():
     parser = argparse.ArgumentParser()
     # for use in GitHub Codespaces use '/workspaces' as directory
     # default is the google colab directory
-    parser.add_argument('--DIR', '--dir', type=str, help='Directory path to dataset folder', default='/content/yolov9/loco')
-    parser.add_argument('--convert2yolo', '-c2y', '--coco2yolo', action='store_true', help='Convert dataset from COCO to YOLO format')
+    parser.add_argument('--DIR', '--dir', '-d', type=str, help='Directory path to dataset folder', default='/content/yolov9/loco')
+    parser.add_argument('--convert2yolo', '-c2y', '--coco2yolo', action='store_true', help='Convert dataset annotation from COCO (JSON) to YOLO format')
+    parser.add_argument('--convertImages', '-cI', action='store_true', help='Extract images from subdirectories and move them to the root of the images directory')
     args = parser.parse_args()
     return args
 
@@ -164,9 +185,13 @@ if __name__ == "__main__":
     arg = parse_args()
     if not os.path.exists(arg.DIR):
         raise FileNotFoundError(f"Directory {arg.DIR} does not exist")
-    transform_images_to_yolo_format(os.path.join(arg.DIR, 'images'))
+    if arg.convertImages:
+        if os.path.exists(os.path.join(arg.DIR, 'images')):
+            transform_images_to_yolo_format(os.path.join(arg.DIR, 'images'))
+        else:
+            raise FileNotFoundError(f"Subdirectory 'images' not found in {arg.DIR}")
     if arg.convert2yolo:
         if os.path.exists(os.path.join(arg.DIR, 'labels')):
             convert_json_to_yolo_txt(os.path.join(arg.DIR, 'labels'))
         else:
-            convert_json_to_yolo_txt(arg.DIR)
+            raise FileNotFoundError(f"Subdirectory 'labels' not found in {arg.DIR}")
