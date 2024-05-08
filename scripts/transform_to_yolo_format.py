@@ -3,6 +3,7 @@ This script converts annotation data from LOCO format (COCO based) to YOLO forma
 1. Extracting the images from subdirectories inside the `image` directory and moving them all in the root of `image`.
     If a custom data split inside `images` of train, val and test is present the script will maintain this structure.
 2. Converting the annotations in JSON format (COCO style) to YOLO format.
+    Additionally it creates a `loco.yaml` file in the root of the dataset folder with the class names.
 
 Parameters
 ----------
@@ -93,7 +94,7 @@ def convert_classid_coco2yolo(loco_id):
 # This script is used to transform the dataset to the YOLO format
 # For use in GitHub Codespaces use '/workspaces' instead of content
 def transform_images_to_yolo_format(directory='/content/yolov9/loco/images'):
-    temp_dir = os.path.join(directory, '../', 'temp')
+    temp_dir = os.path.abspath(os.path.join(directory, '../', 'temp'))
 
     # supported image extensions
     image_extensions = {".jpg", ".jpeg"}
@@ -171,6 +172,38 @@ def convert_json_to_yolo_txt(directory):
                     f.write(f"{class_id} {x:.6f} {y:.6f} {w:.6f} {h:.6f}\n")
         os.remove(os.path.join(directory, json_file))
 
+def create_loco_yaml(directory):
+    class_names = []
+    classes_found = False
+    for dir_name, sub_dir_list, file_list in os.walk(directory):
+        if classes_found:
+            break
+        for file in file_list:
+            if file.endswith('.json'):
+                with open(os.path.join(dir_name, file)) as f:
+                    json_data = json.load(f)
+                for category in json_data["categories"]:
+                    class_names.append(category["name"])
+                classes_found = True
+                break
+    
+    if os.path.exists(os.path.join(directory, 'loco.yaml')):
+        return
+    
+    with open(os.path.abspath(os.path.join(directory, '../../' 'loco.yaml')), 'w') as f:
+        if os.path.exists(os.path.join(directory, 'train')):
+            f.write(f"train: {os.path.abspath(os.path.join(directory, '../images/', 'train'))}\n")
+        else:
+            f.write(f"path: {directory}\n")
+        if os.path.exists(os.path.join(directory, 'val')):
+            f.write(f"val: {os.path.abspath(os.path.join(directory, '../images/', 'val'))}\n")
+        if os.path.exists(os.path.join(directory, 'test')):
+            f.write(f"test: {os.path.abspath(os.path.join(directory, '../images/', 'test'))}\n")
+        f.write('\nnc: 5\nnames:')
+        for i, name in enumerate(class_names):
+            f.write(f'\n  {i}: {name}')
+        
+
 def parse_args():
     parser = argparse.ArgumentParser()
     # for use in GitHub Codespaces use '/workspaces' as directory
@@ -192,6 +225,7 @@ if __name__ == "__main__":
             raise FileNotFoundError(f"Subdirectory 'images' not found in {arg.DIR}")
     if arg.convert2yolo:
         if os.path.exists(os.path.join(arg.DIR, 'labels')):
+            create_loco_yaml(os.path.join(arg.DIR, 'labels'))
             convert_json_to_yolo_txt(os.path.join(arg.DIR, 'labels'))
         else:
             raise FileNotFoundError(f"Subdirectory 'labels' not found in {arg.DIR}")
