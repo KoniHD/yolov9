@@ -1,7 +1,13 @@
+# Disclaimer
+
+This stareted as private Fork of Github Repo - [![Github](https://badges.aleen42.com/src/github.svg)](https://github.com/WongKinYiu/yolov9) \
+It is still pretty much work in progress and used with the hopes of being used for the Implementation of the [LOCO dataset](https://github.com/tum-fml/loco).
+
+Additionally, it might contain scripts to be able to perform the training on the LRZ HPC using the slurm manager.
+
 # YOLOv9
 
 Implementation of paper - [YOLOv9: Learning What You Want to Learn Using Programmable Gradient Information](https://arxiv.org/abs/2402.13616)
-Private Fork of Github Repo - [![Github](https://badges.aleen42.com/src/github.svg)](https://github.com/WongKinYiu/yolov9)
 
 [![arxiv.org](http://img.shields.io/badge/cs.CV-arXiv%3A2402.13616-B31B1B.svg)](https://arxiv.org/abs/2402.13616)
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/kadirnar/Yolov9)
