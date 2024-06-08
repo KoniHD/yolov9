@@ -5,3 +5,6 @@ loco
 .vscode
 .fleet
 loco.yaml
+InstancesIn_train.*
+InstancesIn_val.*
+InstancesIn_test.*

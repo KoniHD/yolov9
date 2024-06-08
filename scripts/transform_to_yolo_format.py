@@ -130,13 +130,6 @@ def transform_images_to_yolo_format(directory='/content/yolov9/loco/images'):
 
 def convert_json_to_yolo_txt(directory):
 
-    # write labels, which holds names of all classes (one class per line)
-    # label_file = os.path.join(os.path.join(output_path, "../"), "labels.txt")
-    # with open(label_file, "w") as f:
-    #    for category in tqdm(json_data["categories"], desc="Categories"):
-    #        category_name = category["name"]
-    #        f.write(f"{category_name}\n")
-
     custom_structure = False
     if os.path.exists(os.path.join(directory, 'train')):
         convert_json_to_yolo_txt(os.path.join(directory, 'train'))
