@@ -28,7 +28,7 @@ def get_filenames_of_id(id, dir, subdir):
                     if class_id == id:
                         filename, _ = os.path.splitext(file)
                         file_list.append(filename + '.jpg')
-                        listOfFiles.write(f"${filename}.jpg\n")
+                        listOfFiles.write(f"{filename}.jpg\n")
                         break
     return len(file_list), listOfFiles
 
