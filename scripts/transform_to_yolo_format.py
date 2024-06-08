@@ -93,7 +93,7 @@ def convert_classid_coco2yolo(loco_id):
 
 # This script is used to transform the dataset to the YOLO format
 # For use in GitHub Codespaces use '/workspaces' instead of content
-def transform_images_to_yolo_format(directory='/content/yolov9/loco/images'):
+def transform_images_to_yolo_format(directory):
     temp_dir = os.path.abspath(os.path.join(directory, '../', 'temp'))
 
     # supported image extensions
@@ -156,7 +156,7 @@ def convert_json_to_yolo_txt(directory):
             img_height = image["height"]
 
             anno_in_image = [anno for anno in json_data["annotations"] if anno["image_id"] == img_id]
-            anno_txt = os.path.join(directory, img_name.split(".")[0] + ".txt")
+            anno_txt = os.path.join(directory, os.path.splitext(img_name)[0] + ".txt")
             with open(anno_txt, "w") as f:
                 for anno in anno_in_image:
                     class_id = convert_classid_coco2yolo(anno["category_id"])
