@@ -14,7 +14,7 @@ fileID: int
     Id of the class to be searched
 """
 
-import shutil, os
+import os
 import argparse
 import shutil
 
@@ -37,7 +37,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     # for use in GitHub Codespaces use '/workspaces' as directory
     # default is the google colab directory
-    parser.add_argument('--DIR', '--dir', '-d', type=str, help='Directory path to label folder', default='/content/yolov9/loco/labels')
+    parser.add_argument('--DIR', '--dir', '-d', type=str, help='Directory path to label folder', default)
     parser.add_argument('--fileId', '--id', '-fi', type=int, help='ID of the class to be searched')
     args = parser.parse_args()
     return args
