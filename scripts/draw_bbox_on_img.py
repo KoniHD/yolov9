@@ -7,10 +7,36 @@ Parameters
 """
 import os
 import argparse
-import cv2
+import cv2 as cv
 
-def draw_bbos(dir, subset, img):
-    for bounding_box in predictions['predictions']:
+class_names = {
+    0: 'small load carrier',
+    1: 'forklift',
+    2: 'pallet',
+    3: 'stillage',
+    4: 'pallet truck'
+}
+
+def draw_bbos(dir, subset, imgName, classId):
+    
+    predictions = []
+    labels = os.path.splitext(imgName)[0] + ".txt"
+    image = cv.imread(os.path.join(dir, 'images/', subset, imgName))
+    img_height, img_width = image.shape[:2]
+
+    with open(os.path.join(dir, 'labels/', subset, labels), 'r') as f:
+        for line in f:
+            data = line.strip().split()
+            if int(data[0]) == classId:
+                predictions.append({
+                    'x': float(data[1]) * img_width,
+                    'y': float(data[2]) * img_height,
+                    'width': float(data[3]) * img_width,
+                    'height': float(data[4]) * img_height
+                })
+
+    
+    for bounding_box in predictions:
         x0 = bounding_box['x'] - bounding_box['width'] / 2
         x1 = bounding_box['x'] + bounding_box['width'] / 2
         y0 = bounding_box['y'] - bounding_box['height'] / 2
@@ -18,25 +44,27 @@ def draw_bbos(dir, subset, img):
     
         start_point = (int(x0), int(y0))
         end_point = (int(x1), int(y1))
-        cv2.rectangle(img, start_point, end_point, color=(0,0,0), thickness=1)
+        cv.rectangle(image, start_point, end_point, color=(0,255,0), thickness=2)
     
-        cv2.putText(
+        cv.putText(
             image,
-            bounding_box["class"],
-            (int(x0), int(y0) - 10),
-            fontFace = cv2.FONT_HERSHEY_SIMPLEX,
-            fontScale = 0.6,
+            class_names[classId],
+            (int(x0), int(y1) + 20),
+            fontFace = cv.FONT_HERSHEY_TRIPLEX,
+            fontScale = 0.7,
             color = (255, 255, 255),
-            thickness=2
-    )
-    cv2.imwrite("example_with_bounding_boxes.jpg", image)
+            thickness=1
+        )
+    if not os.path.exists(os.path.join(dir, 'bbox_anot/')):
+        os.mkdir(os.path.abspath(os.path.join(dir, 'bbox_anot/')))
+    cv.imwrite(os.path.join(dir, 'bbox_anot/', imgName), image)
 
 def parse_args():
     parser = argparse.ArgumentParser()
     # for use in GitHub Codespaces use '/workspaces' as directory
     # default is the google colab directory
-    parser.add_argument('--DIR', '--dir', '-d', type=str, help='Directory path to dataset folder', default)
-    parser.add_argument('--classId', '--id', '-ci', type=int, help='ID of the class to be displayed, if none is given all classes will be displayed')
+    parser.add_argument('--DIR', '--dir', '-d', type=str, help='Directory path to dataset folder', default='/workspace/yolov9/loco')
+    parser.add_argument('--classId', '--id', '--ci', type=int, help='ID of the class to be displayed, if none is given all classes will be displayed')
     parser.add_argument('--img', type=str, help='Name of the image to be displayed')
     args = parser.parse_args()
     return args
