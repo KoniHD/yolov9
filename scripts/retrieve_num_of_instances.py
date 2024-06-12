@@ -11,11 +11,20 @@ Parameters
 DIR : str
     Directory path to label folder. It might contain the subdirectories `train`, `val` and `test` 
 fileID: int
-    Id of the class to be searched
+    Id of the class to be searched. Possible Ids are 0 (small load carrier), 1 (forklift), \
+        2 (pallet), 3 (stillage), 4 (pallet truck)
 """
 
 import os
 import argparse
+
+class_names = {
+    0: 'small load carrier',
+    1: 'forklift',
+    2: 'pallet',
+    3: 'stillage',
+    4: 'pallet truck'
+}
 
 def get_filenames_of_id(id, dir, subdir):
     file_list = []
@@ -43,8 +52,12 @@ def parse_args():
 
 if __name__ == "__main__":
     arg = parse_args()
+
     if not os.path.exists(arg.DIR):
         raise FileNotFoundError(f"Directory {arg.DIR} does not exist")
+    if arg.fileId not in class_names.keys():
+        raise ValueError(f"Class ID {arg.fileId} is not valid. Valid IDs are {class_names.keys()}")
+    
     if os.path.exists(os.path.join(arg.DIR, 'train')):
         numOfInstances, listOfFiles = get_filenames_of_id(arg.fileId, os.path.abspath(arg.DIR), 'train')
         print(f"There are {numOfInstances} images of category {arg.fileId} in the train dataset. Located in the file InstancesIn_train.txt.")
