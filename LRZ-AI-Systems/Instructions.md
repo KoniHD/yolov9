@@ -81,7 +81,10 @@ To use it perform the following command in the lcoation you want the dataset to 
 ```
 ./scripts/get_loco.sh
 ```
-*Hint:* If you cloned the repo you will have to make the script executable first with `chmod +x ./scripts/get_loco.sh`
+*Hint:* If you cloned the repo you will have to make the script executable first with 
+```
+chmod +x ./scripts/get_loco.sh
+``
 
 After the dataset is downloaded it is ready to be used by an object detection model using the 'MSCOCO' data anotation format. However, if needed it can be transformed using the `transform_to_yolo_format.py` (which btw can also be used if you just want to get rid of the subdirectory structure the LOCO dataset naturally comes with or if you only want to convert the anotation) \
 For parameter explanation just use 
