@@ -13,7 +13,8 @@ Also the links of the documentation page of LRZ seem to change quite regularly s
     * [Nvidia NGC Containers](#nvidia-ngc-containers)
     * [Access to AI Systems DSS](#access-to-ai-systems-dss)
 2. [Working on the LRZ AI System](#working-on-the-lrz-ai-system)
-    * [Working with YOLOv9 on the LOCO dataset](#work-with-yolov9-on-the-loco-dataset) 
+   * [Basics on working on the LRZ AI System](#basics-on-working-on-the-lrz-ai-system)
+       * [Working with YOLOv9 on the LOCO dataset](#work-with-yolov9-on-the-loco-dataset) 
     * [Work with command line](#work-with-command-line)
     * [Working with website interface](#work-with-website-interface)
         * [Work with YOLOv9 on IWS](#work-with-yolov9-on-iws)
@@ -59,7 +60,7 @@ machine authn.nvidia.com login $oauthtoken password <KEY>
 ```
 **STILL WORKING**
 &rarr; Now you are set up to import NGC containers using the `enroot` command, which however does not work on the login nodes! 
-The usage is discribed later in [Working on the LRZ AI-Systems](#working-on-the-lrz-ai-system)
+The usage is discribed later in [Working on the LRZ AI Systems](#working-on-the-lrz-ai-system)
 
 ## Access to AI Systems DSS
 
@@ -75,6 +76,8 @@ So the steps are:
 4. Test your access by login in via `ssh <lrz-userid>@login.ai.lrz.de` and then `cd /dss/dssfs04/<your_dir_path>`. If you are able to create files here you are good to go for uploading your data and the ML model. (Creating files: `touch filename.txt`) 
 
 # Working on the LRZ AI System
+
+## Basics on working on the LRZ AI System
 
 **Important** note that after `ssh` login you are on a *login node*. This means you can use the command line to execute commands mostly meant to set up your work for later, i.e., downloading a dataset. On this *login node* you cannot perform command involving `sudo` or download packages via `apt install`.
 
@@ -97,7 +100,7 @@ ln -s /dss/dssfs04/<your_dir_path> <link_name>
 
 For ease of use, and because it is necessary to always download the data again when using Google's Colab, I wrote the `get_loco.sh` and the `transform_to_yolo_format.py` script which automatically download the LOCO dataset and transform it to fit YOLO standards.
 
-These scripts also come in handy when preparing the data for execution on the LRZ AI-System.
+These scripts also come in handy when preparing the data for execution on the LRZ AI System.
 Firstly, I would recommend to
 ```
 git clone https://github.com/KoniHD/yolov9.git
@@ -155,7 +158,7 @@ Also currently it is the only working way of accessing the LRZ computing resourc
 7. After that your request will be automatically queued in the to LRZ AI System and once it's the resources are free the website will automatically provide you with a link to a Jupyter Notebook.
 
 ### Work with YOLOv9 on IWS
-<details><summary> <b>Infos on how to use the given Jupyter Notebook on the LRZ AI-System</b> </summary>
+<details><summary> <b>Infos on how to use the given Jupyter Notebook on the LRZ AI System</b> </summary>
 
 * To avoid mounting issues I recommend creating a Linux Sym link of your `/dss/dssfs04` directory into your `$HOME` directory as this is automatically mounted into your Notebook session. Discribed [here](#working-on-the-lrz-ai-system)
 * Since the AI System is not intended for testing I would recommend cloning the git repo into your `/dss/dssfs04` and follow the steps done in [working with loco on IWS](#work-with-yolov9-on-the-loco-dataset). In the execution I would recommend only to perform `git pull`.
