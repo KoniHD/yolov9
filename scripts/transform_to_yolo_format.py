@@ -22,7 +22,6 @@ convert2yolo : bool
 import shutil, os
 import argparse
 import json
-import shutil
 from tqdm import tqdm
 
 def convert_bbox_coco2yolo(img_width, img_height, bbox):
@@ -156,7 +155,7 @@ def convert_json_to_yolo_txt(directory):
             img_height = image["height"]
 
             anno_in_image = [anno for anno in json_data["annotations"] if anno["image_id"] == img_id]
-            anno_txt = os.path.join(directory, os.path.splitext(img_name)[0] + ".txt")
+            anno_txt = os.path.join(directory, img_name.replace(".jpg", ".txt"))
             with open(anno_txt, "w") as f:
                 for anno in anno_in_image:
                     class_id = convert_classid_coco2yolo(anno["category_id"])
