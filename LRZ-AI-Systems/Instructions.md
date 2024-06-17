@@ -153,14 +153,13 @@ Also currently it is the only working way of accessing the LRZ computing resourc
     * **Note:** Using the IWS you do not have direct access to a GPU but rather you have access to a [MIG slice](https://www.nvidia.com/en-us/technologies/multi-instance-gpu/). This means IWS is not intended for distributed computing on multiple graphics cards.
 5. You can select between 2 possible default *enroot* container images to let your Jupyter Notebook run in: One uses Tensorflow the other uses PyTorch. \
 *Maybe custom images can be used here too if previously downloaded. I have not tried that so it's on you to do so*
-6. Like above mount the program plus data that is needed for execution \
-**DID NOT WORK FOR ME YET**
+6. For some reason I was unable to find the correct mounting point on the AI System. Failed attempts were: `/dss/dssfs04/my-data:/jupyter_session` &rarr; crashed notebook before start; `/dss/dssfs04/my-data:/data` and `/dss/dssfs04/my-data:/mnt/data` both just did not work. Talking to the support, I was affirmd, that the current best sollution is to have a symlink as described [here](#working-on-the-lrz-ai-system)
 7. After that your request will be automatically queued in the to LRZ AI System and once it's the resources are free the website will automatically provide you with a link to a Jupyter Notebook.
 
 ### Work with YOLOv9 on IWS
 <details><summary> <b>Infos on how to use the given Jupyter Notebook on the LRZ AI System</b> </summary>
 
-* To avoid mounting issues I recommend creating a Linux Sym link of your `/dss/dssfs04` directory into your `$HOME` directory as this is automatically mounted into your Notebook session. Discribed [here](#working-on-the-lrz-ai-system)
+* Like mentioned above first create a Linux symlink for your data and model stored on `/dss/dssfs04/your-data` to `$HOME` as described [here](#working-on-the-lrz-ai-system).
 * Since the AI System is not intended for testing I would recommend cloning the git repo into your `/dss/dssfs04` and follow the steps done in [working with loco on IWS](#work-with-yolov9-on-the-loco-dataset). In the execution I would recommend only to perform `git pull`.
 * I put together a Jupyter Notebook meant for execution on the LRZ System: `./yolov9/LRZ-AI-Systems/train-model.ipynb`. In this script the first two code cells are meant to be performed before every training execution in oder to 1. clone the latest changes you commited from *coding on your own* machine 2. install the necessary pip extensions mentioned in the [README.md](https://github.com/WongKinYiu/yolov9/blob/main/README.md#installation).
 * After executing the first two cells reload the kernel and then start the Notebook again beginning with the third cell!
