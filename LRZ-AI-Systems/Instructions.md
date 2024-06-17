@@ -162,7 +162,7 @@ Also currently it is the only working way of accessing the LRZ computing resourc
 
 * To avoid mounting issues I recommend creating a Linux Sym link of your `/dss/dssfs04` directory into your `$HOME` directory as this is automatically mounted into your Notebook session. Discribed [here](#working-on-the-lrz-ai-system)
 * Since the AI System is not intended for testing I would recommend cloning the git repo into your `/dss/dssfs04` and follow the steps done in [working with loco on IWS](#work-with-yolov9-on-the-loco-dataset). In the execution I would recommend only to perform `git pull`.
-* I put together a Jupyter Notebook meant for execution on the LRZ System: `./yolov9/LRZ-AI-Systems/train-model.ipynb`. In this script the first two code cells are meant to be performed before every training execution in oder to 1. clone the latest changes you commited from *coding on your own* machine 2. install the necessary pip extensions mentioned in the [README.md](https://github.com/WongKinYiu/yolov9/blob/main/README.md/#installation).
+* I put together a Jupyter Notebook meant for execution on the LRZ System: `./yolov9/LRZ-AI-Systems/train-model.ipynb`. In this script the first two code cells are meant to be performed before every training execution in oder to 1. clone the latest changes you commited from *coding on your own* machine 2. install the necessary pip extensions mentioned in the [README.md](https://github.com/WongKinYiu/yolov9/blob/main/README.md#installation).
 * After executing the first two cells reload the kernel and then start the Notebook again beginning with the third cell!
 
 </details>
