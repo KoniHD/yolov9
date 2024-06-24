@@ -112,34 +112,34 @@ def parse_args():
     # for use in GitHub Codespaces use '/workspaces' as directory
     # for use of LRZ AI systems use '/workspace' as directory
     # default is the google colab directory
-    parser.add_argument('--DIR', '--dir', '-d', type=str, help='Path to dataset directory.', default='/content/yolov9/loco')
-    parser.add_argument('--classId', '--id', '-ci', type=to_set, help='Comma-seperated list of Class IDs to be displayed. \
+    parser.add_argument('--dir', '-d', type=str, help='Path to dataset directory.', default='/content/yolov9/loco')
+    parser.add_argument('--classId', '--id', type=to_set, help='Comma-seperated list of Class IDs to be displayed. \
                         If none is given all classes will be displayed.')
     parser.add_argument('--img', type=str, help='Filename of the image to be displayed.')
-    parser.add_argument('--shiftedBbox', '--sbb', type=bool, help='Produces another file with shifted bounding boxes.\
-                        Default is Flase', default=False)
+    parser.add_argument('--shiftedBbox', '--sbb', action='store_true', help='Produces another file with shifted bounding boxes.\
+                        Default is Flase')
     args = parser.parse_args()
     return args
 
 if __name__ == "__main__":
     arg = parse_args()
     
-    if not os.path.exists(arg.DIR):
-        raise FileNotFoundError(f"Directory {arg.DIR} does not exist")
+    if not os.path.exists(arg.dir):
+        raise FileNotFoundError(f"Directory {arg.dir} does not exist")
     if arg.classId and not all(isinstance(i, int) and 0<=i and i<=4 for i in arg.classId):
         raise ValueError(f"Class ID {arg.classId} is not valid. Valid IDs are {class_names.keys()}")
 
-    if os.path.exists(os.path.join(arg.DIR, 'images/train', arg.img)):
-        draw_bbs(os.path.abspath(arg.DIR), 'train', arg.img, arg.classId)
+    if os.path.exists(os.path.join(arg.dir, 'images/train', arg.img)):
+        draw_bbs(os.path.abspath(arg.dir), 'train', arg.img, arg.classId)
         if arg.shiftedBbox:
-            draw_shifted_bbx(os.path.abspath(arg.DIR), 'train', arg.img, arg.classId)
-    elif os.path.exists(os.path.join(arg.DIR, 'images/val', arg.img)):
-        draw_bbs(os.path.abspath(arg.DIR), 'val', arg.img, arg.classId)
+            draw_shifted_bbx(os.path.abspath(arg.dir), 'train', arg.img, arg.classId)
+    elif os.path.exists(os.path.join(arg.dir, 'images/val', arg.img)):
+        draw_bbs(os.path.abspath(arg.dir), 'val', arg.img, arg.classId)
         if arg.shiftedBbox:
-            draw_shifted_bbx(os.path.abspath(arg.DIR), 'val', arg.img, arg.classId)
-    elif os.path.exists(os.path.join(arg.DIR, 'images/test', arg.img)):
-        draw_bbs(os.path.abspath(arg.DIR), 'val', arg.img, arg.classId)
+            draw_shifted_bbx(os.path.abspath(arg.dir), 'val', arg.img, arg.classId)
+    elif os.path.exists(os.path.join(arg.dir, 'images/test', arg.img)):
+        draw_bbs(os.path.abspath(arg.dir), 'val', arg.img, arg.classId)
         if arg.shiftedBbox:
-            draw_shifted_bbx(os.path.abspath(arg.DIR), 'val', arg.img, arg.classId)
+            draw_shifted_bbx(os.path.abspath(arg.dir), 'val', arg.img, arg.classId)
     else:
         raise FileNotFoundError(f"Image {arg.img} does not exist")

@@ -200,24 +200,24 @@ def parse_args():
     parser = argparse.ArgumentParser()
     # for use in GitHub Codespaces use '/workspaces' as directory
     # default is the google colab directory
-    parser.add_argument('--DIR', '--dir', '-d', type=str, help='Directory path to dataset folder', default='/content/yolov9/loco')
-    parser.add_argument('--convert2yolo', '-c2y', '--coco2yolo', action='store_true', help='Convert dataset annotation from COCO (JSON) to YOLO format')
-    parser.add_argument('--convertImages', '-cI', action='store_true', help='Extract images from subdirectories and move them to the root of the images directory')
+    parser.add_argument('--dir', '-d', type=str, help='Directory path to dataset folder', default='/content/yolov9/loco')
+    parser.add_argument('--convert-annotations', action='store_true', help='Convert dataset annotation from COCO (JSON) to YOLO format')
+    parser.add_argument('--convert-images', action='store_true', help='Extract images from subdirectories and move them to the root of the images directory')
     args = parser.parse_args()
     return args
 
 if __name__ == "__main__":
     arg = parse_args()
-    if not os.path.exists(arg.DIR):
-        raise FileNotFoundError(f"Directory {arg.DIR} does not exist")
-    if arg.convertImages:
-        if os.path.exists(os.path.join(arg.DIR, 'images')):
-            transform_images_to_yolo_format(os.path.join(arg.DIR, 'images'))
+    if not os.path.exists(arg.dir):
+        raise FileNotFoundError(f"Directory {arg.dir} does not exist")
+    if arg.convert_images:
+        if os.path.exists(os.path.join(arg.dir, 'images')):
+            transform_images_to_yolo_format(os.path.join(arg.dir, 'images'))
         else:
-            raise FileNotFoundError(f"Subdirectory 'images' not found in {arg.DIR}")
-    if arg.convert2yolo:
-        if os.path.exists(os.path.join(arg.DIR, 'labels')):
-            create_loco_yaml(os.path.join(arg.DIR, 'labels'))
-            convert_json_to_yolo_txt(os.path.join(arg.DIR, 'labels'))
+            raise FileNotFoundError(f"Subdirectory 'images' not found in {arg.dir}")
+    if arg.convert_annotations:
+        if os.path.exists(os.path.join(arg.dir, 'labels')):
+            create_loco_yaml(os.path.join(arg.dir, 'labels'))
+            convert_json_to_yolo_txt(os.path.join(arg.dir, 'labels'))
         else:
-            raise FileNotFoundError(f"Subdirectory 'labels' not found in {arg.DIR}")
+            raise FileNotFoundError(f"Subdirectory 'labels' not found in {arg.dir}")

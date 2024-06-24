@@ -54,8 +54,8 @@ def parse_args():
     parser = argparse.ArgumentParser()
     # for use in GitHub Codespaces use '/workspaces' as directory
     # default is the google colab directory
-    parser.add_argument('--DIR', '--dir', '-d', type=str, help='Directory path to label folder', default='/content/yolov9/loco')
-    parser.add_argument('--classId', '--id', '-ci', type=to_set, help='Comma-seperated list of Class IDs to be searched. \
+    parser.add_argument('--dir', '-d', type=str, help='Directory path to label folder', default='/content/yolov9/loco')
+    parser.add_argument('--classId', '--id', type=to_set, help='Comma-seperated list of Class IDs to be searched. \
                         If none is given all classes will be displayed.')
     args = parser.parse_args()
     return args
@@ -63,35 +63,35 @@ def parse_args():
 if __name__ == "__main__":
     arg = parse_args()
 
-    if not os.path.exists(arg.DIR):
-        raise FileNotFoundError(f"Directory {arg.DIR} does not exist")
+    if not os.path.exists(arg.dir):
+        raise FileNotFoundError(f"Directory {arg.dir} does not exist")
     if arg.classId and not all(isinstance(i, int) and 0<=i and i<=4 for i in arg.classId):
         raise ValueError(f"Class ID {arg.classId} is not valid. Valid IDs are 0, 1, 2, 3, 4.")
     
     numOfInstances = 0
     
-    if os.path.exists(os.path.join(arg.DIR, 'train')):
-        numOfImages, numOfInstancesTrain = get_filenames_of_id(os.path.abspath(arg.DIR), 'train', arg.classId)
+    if os.path.exists(os.path.join(arg.dir, 'train')):
+        numOfImages, numOfInstancesTrain = get_filenames_of_id(os.path.abspath(arg.dir), 'train', arg.classId)
         numOfInstances += numOfInstancesTrain
         if arg.classId is not None:
             print(f"There are {numOfImages} images containing an object of category {arg.classId} in the train dataset." +
                   " The image_files are located in the file InstancesIn_train.txt.")
         else:
             print(f"There are {numOfImages} images in the train dataset containing an annotated object.")
-    if os.path.exists(os.path.join(arg.DIR, 'val')):
-        numOfImages, numOfInstancesVal = get_filenames_of_id(os.path.abspath(arg.DIR), 'val', arg.classId)
+    if os.path.exists(os.path.join(arg.dir, 'val')):
+        numOfImages, numOfInstancesVal = get_filenames_of_id(os.path.abspath(arg.dir), 'val', arg.classId)
         numOfInstances += numOfInstancesVal
         if arg.classId is not None:
-            print(f"There are {numOfImages} images containing an object of category {arg.classId} in the train dataset." +
-                  " The image_files are located in the file InstancesIn_train.txt.")
+            print(f"There are {numOfImages} images containing an object of category {arg.classId} in the val dataset." +
+                  " The image_files are located in the file InstancesIn_val.txt.")
         else:
-            print(f"There are {numOfImages} images in the train dataset containing an annotated object.")
-    if os.path.exists(os.path.join(arg.DIR, 'test')):
-        numOfImages, numOfInstancesTest = get_filenames_of_id(os.path.abspath(arg.DIR), 'test', arg.classId)
+            print(f"There are {numOfImages} images in the val dataset containing an annotated object.")
+    if os.path.exists(os.path.join(arg.dir, 'test')):
+        numOfImages, numOfInstancesTest = get_filenames_of_id(os.path.abspath(arg.dir), 'test', arg.classId)
         numOfInstances += numOfInstancesTest
         if arg.classId is not None:
-            print(f"There are {numOfImages} images containing an object of category {arg.classId} in the train dataset." +
-                  " The image_files are located in the file InstancesIn_train.txt.")
+            print(f"There are {numOfImages} images containing an object of category {arg.classId} in the test dataset." +
+                  " The image_files are located in the file InstancesIn_test.txt.")
         else:
-            print(f"There are {numOfImages} images in the train dataset containing an annotated object.")
+            print(f"There are {numOfImages} images in the test dataset containing an annotated object.")
     print(f"Total number of images of category {arg.classId} is {numOfInstances}")
