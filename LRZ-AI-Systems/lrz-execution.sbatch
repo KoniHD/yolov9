@@ -10,7 +10,7 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=konstantin.zeck@tum.de
 # Wall clock limit:
-#SBATCH --time=00:30:00
+#SBATCH --time=05:00:00
 #SBATCH --no-requeue
 #Setup of execution environment
 #needed? export=NONE
@@ -21,10 +21,7 @@
 srun \
 --mpi=pmi2 --ntasks-per-node=2 \
 --container-mount='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000/:/workspace/' \
---container-image='nvcr.io/nvidia/pytorch:24.03-py3'
-
-# Install necessary packages and set env variables
-pip install seaborn thop "Pillow<10.0.0" -q
+--container-image='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000/Pytorch+24.03-py3+yolov9.sqsh'
 
 YOLO='/workspace/yolov9'
 Lauf_num='Lauf_'
