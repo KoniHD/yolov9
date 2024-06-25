@@ -1,6 +1,6 @@
 #!/bin/bash
 # Job Name and Files (also --job-name)
-#SBATCH --jobe-name="yolov9-training-res800"
+#SBATCH --job-name="yolov9-training-res800"
 #SBATCH --partition=lrz-v100x2
 #SBATCH --gres=gpu:2
 #Output and error (also --output, --error):
@@ -37,7 +37,7 @@ else
     WEIGHTS_PATH="/workspace/weights/yolo-e.pt"
 fi
 
-python3 ${YOLO}/train_dual.py --batch 12 --epochs 100 --device 0 --min-items 0 --img 800 \
+python3 ${YOLO}/train_dual.py --batch 8 --epochs 2550 --device 0 --min-items 0 --img 800 \
 --name ${Lauf_num} \
 --data ${YOLO}/loco.yaml \
 --weights ${WEIGHTS_PATH} \
