@@ -15,7 +15,7 @@
 #Setup of execution environment
 #needed? export=NONE
 #needed? get-user-env
-#SBATCH --account=t7431
+#needed? --account=t7431
 
 # Set up the container environment
 srun \
