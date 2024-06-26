@@ -1,17 +1,17 @@
 """
-This file takes a given bbox represented in the yolo format in a .txt file and draws it on the corresponding image.
+This script takes a given bbox represented in the yolo format in a .txt file and draws it on the corresponding image.
 
 Parameters
 ----------
-DIR : str
+dir : str
     Path to dataset directory. It should contain the subdirectories `images` and `labels` 
-classId: int
+class-id: int
     Comma-seperated list of Class IDs to be displayed, if none is given all classes will be displayed.
     Possible Ids are 0 (small load carrier), 1 (forklift), 2 (pallet), 3 (stillage), 4 (pallet truck)
 img: str
     Name of the image to be displayed. E.g. '1574676405.192456.jpg' for a forklift picture.
     Images are stored in the subdirectory `bbox_anot` after the script is executed.
-shiftedBbox: bool
+shifted-bbox: bool
     If Ture produces another additional file ('img_shifted.jpg') with shifted bounding boxes.
     Default is False.
 """
@@ -113,10 +113,10 @@ def parse_args():
     # for use of LRZ AI systems use '/workspace' as directory
     # default is the google colab directory
     parser.add_argument('--dir', '-d', type=str, help='Path to dataset directory.', default='/content/yolov9/loco')
-    parser.add_argument('--classId', '--id', type=to_set, help='Comma-seperated list of Class IDs to be displayed. \
+    parser.add_argument('--class-id', '--id', type=to_set, help='Comma-seperated list of Class IDs to be displayed. \
                         If none is given all classes will be displayed.')
     parser.add_argument('--img', type=str, help='Filename of the image to be displayed.')
-    parser.add_argument('--shiftedBbox', '--sbb', action='store_true', help='Produces another file with shifted bounding boxes.\
+    parser.add_argument('--shifted-bbox', '--sbb', action='store_true', help='Produces another file with shifted bounding boxes.\
                         Default is Flase')
     args = parser.parse_args()
     return args

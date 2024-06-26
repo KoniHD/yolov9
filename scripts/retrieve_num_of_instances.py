@@ -8,9 +8,9 @@ Potential Ids are:
   4: pallet_truck
 Parameters
 ----------
-DIR : str
+dir : str
     Directory path to label folder. It might contain the subdirectories `train`, `val` and `test` 
-classID: int
+class-id: int
     Id of the class to be searched. Possible Ids are 0 (small load carrier), 1 (forklift), \
         2 (pallet), 3 (stillage), 4 (pallet truck)
 """
@@ -55,7 +55,7 @@ def parse_args():
     # for use in GitHub Codespaces use '/workspaces' as directory
     # default is the google colab directory
     parser.add_argument('--dir', '-d', type=str, help='Directory path to label folder', default='/content/yolov9/loco')
-    parser.add_argument('--classId', '--id', type=to_set, help='Comma-seperated list of Class IDs to be searched. \
+    parser.add_argument('--class-id', '--id', type=to_set, help='Comma-seperated list of Class IDs to be searched. \
                         If none is given all classes will be displayed.')
     args = parser.parse_args()
     return args

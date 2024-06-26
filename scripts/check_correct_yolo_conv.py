@@ -1,3 +1,18 @@
+"""
+This script is intended to check if the conversion from the .JSON format into YOLO format worked as intended.
+
+Parameters
+----------
+img-dir : str
+    Path to image directory. It can contain subdirectories `train` and `val`.
+label-dir: str
+    Path to label directory. It can contain subdirectories `train` and `val` with the annotations in YOLO format.
+check-JSON: str
+    Checks provided JSON file additionally for missing annotations
+quite: store_true
+    Do not print out missing annotations.
+    Default behavior is to print out missing annotations.
+"""
 import os
 import argparse
 import json
@@ -41,9 +56,9 @@ def checkJSON(json_dir):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--img_dir', '--img', '-i', type=str, help='Directory path to image folder', default='/content/yolov9/loco/images')
-    parser.add_argument('--label_dir', '--label', '-l', type=str, help='Directory path to label folder', default='/content/yolov9/loco/labels')
-    parser.add_argument('--checkJSON', '--json', '-j', type=str, help='Check provided JSON files for missing annotations')
+    parser.add_argument('--img-dir', '--img', '-i', type=str, help='Path to image directory', default='/content/yolov9/loco/images')
+    parser.add_argument('--label-dir', '--label', '-l', type=str, help='Path to label directory', default='/content/yolov9/loco/labels')
+    parser.add_argument('--check-JSON', '--json', '-j', type=str, help='Check provided JSON file for missing annotations')
     parser.add_argument('--quite', '-q', action='store_true', help='Do not print out missing annotations')
     args = parser.parse_args()
     return args

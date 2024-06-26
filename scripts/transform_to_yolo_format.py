@@ -7,16 +7,14 @@ This script converts annotation data from LOCO format (COCO based) to YOLO forma
 
 Parameters
 ----------
-DIR : str
+dir : str
     Directory path to dataset folder. It should contain the subdirectories `images` and `labels` with the images and annotations in COCO format.
     This option must be provided in order for the script to work.
-convertImages : bool
-    If set to True, the script will extract images from subdirectories inside the `images` directory and move them all in the root of `images`.
+convert-images : store_true
+    If set, the script will extract images from subdirectories inside the `images` directory and move them all in the root of `images`.
     If a custom data split inside `images` of train, val and test is present the script will maintain this structure.
-    Default is False.
-convert2yolo : bool
-    If set to True, the script will convert dataset annotations from COCO to YOLO format.
-    Default is False.
+convert-annotations : store_true
+    If set, the script will convert dataset annotations from COCO to YOLO format.
 """
 
 import shutil, os
