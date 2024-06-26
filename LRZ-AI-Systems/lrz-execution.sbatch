@@ -1,26 +1,26 @@
 #!/bin/bash
-# Job Name and Files (also --job-name)
-#SBATCH --job-name="yolov9-training-res800"
+# Job Name and Resources
+#SBATCH --job-name="yolov9e-training-res800"
 #SBATCH --partition=lrz-v100x2
 #SBATCH --gres=gpu:2
 #Output and error (also --output, --error):
-#SBATCH -o ./%x.%j.out
-#SBATCH -e ./%x.%j.err
+#SBATCH -o /dss/dsshome1/0D/ge78taz2/bachelor-thesis/%x.%j.out
+#SBATCH -e /dss/dsshome1/0D/ge78taz2/bachelor-thesis/%x.%j.err
 #Notification and type
 #SBATCH --mail-type=END
 #SBATCH --mail-user=konstantin.zeck@tum.de
 # Wall clock limit:
-#SBATCH --time=05:00:00
+#SBATCH --time=00:30:00
 #SBATCH --no-requeue
 #Setup of execution environment
 #needed? export=NONE
 #needed? get-user-env
-#needed? --account=t7431
+#SBATCH --account=t7431
 
 # Set up the container environment
 srun \
 --mpi=pmi2 --ntasks-per-node=2 \
---container-mount='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000/:/workspace/' \
+--container-mounts='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000:/workspace' \
 --container-image='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000/Pytorch+24.03-py3+yolov9.sqsh'
 
 YOLO='/workspace/yolov9'
@@ -37,7 +37,7 @@ else
     WEIGHTS_PATH="/workspace/weights/yolo-e.pt"
 fi
 
-python3 ${YOLO}/train_dual.py --batch 8 --epochs 2550 --device 0 --min-items 0 --img 800 \
+python3 ${YOLO}/train_dual.py --batch 8 --epochs 250 --device 0 --min-items 0 --img 800 \
 --name ${Lauf_num} \
 --data ${YOLO}/loco.yaml \
 --weights ${WEIGHTS_PATH} \
