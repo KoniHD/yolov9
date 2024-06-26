@@ -4,18 +4,17 @@
 #SBATCH --partition=lrz-v100x2
 #SBATCH --gres=gpu:2
 #Output and error (also --output, --error):
-#SBATCH -o /dss/dsshome1/0D/ge78taz2/bachelor-thesis/%x.%j.out
-#SBATCH -e /dss/dsshome1/0D/ge78taz2/bachelor-thesis/%x.%j.err
+#SBATCH -o /dss/dsshome1/0D/ge78taz2/batch_jobs/output/%x.%j.out
+#SBATCH -e /dss/dsshome1/0D/ge78taz2/batch_jobs/error/%x.%j.err
 #Notification and type
-#SBATCH --mail-type=END
+#SBATCH --mail-type=BEGIN,END
 #SBATCH --mail-user=konstantin.zeck@tum.de
 # Wall clock limit:
-#SBATCH --time=00:30:00
+#SBATCH --time=05:00:00
 #SBATCH --no-requeue
 #Setup of execution environment
 #needed? export=NONE
 #needed? get-user-env
-#SBATCH --account=t7431
 
 # Set up the container environment
 srun \
