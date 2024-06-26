@@ -9,6 +9,7 @@ InstancesIn_test.txt
 .vscode
 .fleet
 loco.yaml
-InstancesIn_train.*
-InstancesIn_val.*
-InstancesIn_test.*
+InstancesIn_train.txt
+InstancesIn_val.txt
+InstancesIn_test.txt
+runs
