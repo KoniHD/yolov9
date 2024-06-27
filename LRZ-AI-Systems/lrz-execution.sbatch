@@ -26,4 +26,4 @@ python3 /workspace/yolov9/train_dual.py --batch 8 --epochs 250 --device 0 --min-
 --data /workspace/yolov9/loco.yaml \
 --weights /workspace/weights/yolo-e.pt \
 --cfg /workspace/yolov9/models/detect/yolov9_custom.yaml \
---hyp /workspace/yolov9/data/hyps/hyp.scratch.yaml \
+--hyp /workspace/yolov9/data/hyps/hyp.scratch-high.yaml \
