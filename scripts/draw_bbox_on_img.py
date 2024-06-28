@@ -15,9 +15,16 @@ shifted-bbox: bool
     If Ture produces another additional file ('img_shifted.jpg') with shifted bounding boxes.
     Default is False.
 """
-import os
+import os, sys
 import argparse
 import cv2 as cv
+from pathlib import Path
+
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[1]  # One level up from the YOLO root directory
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))  # add the new ROOT to PATH
+ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 from utils.plots import Annotator, colors
 
@@ -54,7 +61,7 @@ def get_predictions(dir, subset, imgName, classId):
 def draw_bbs(dir, subset, imgName, classId):
 
     predictions, image = get_predictions(dir, subset, imgName, classId)
-    annotator = Annotator(image, line_width=3, example=str(classId))
+    annotator = Annotator(image, line_width=2, example=str(classId))
     
     for bounding_box in predictions:
         x0 = bounding_box['x'] - bounding_box['width'] / 2
@@ -62,24 +69,9 @@ def draw_bbs(dir, subset, imgName, classId):
         y0 = bounding_box['y'] - bounding_box['height'] / 2
         y1 = bounding_box['y'] + bounding_box['height'] / 2
 
-        annotator.box_label(x0, y0, x1, y1, label=class_names[bounding_box['classId']], color=colors(bounding_box['classId'], True))
-    
-        # start_point = (int(x0), int(y0))
-        # end_point = (int(x1), int(y1))
-        # cv.rectangle(image, start_point, end_point, color=(0,255,0), thickness=2)
-    
-        # cv.putText(
-        #     image,
-        #     class_names[bounding_box['classId']],
-        #     (int(x0), int(y1) + 20),
-        #     fontFace = cv.FONT_HERSHEY_TRIPLEX,
-        #     fontScale = 0.7,
-        #     color = (255, 255, 255),
-        #     thickness=1
-        # )
+        annotator.box_label(box=(x0, y0, x1, y1), label=class_names[bounding_box['classId']], color=colors(bounding_box['classId'], True))
     
     image = annotator.result()
-
     if not os.path.exists(os.path.join(dir, 'bbox_anot/')):
         os.mkdir(os.path.abspath(os.path.join(dir, 'bbox_anot/')))
     cv.imwrite(os.path.join(dir, 'bbox_anot/', imgName), image)
@@ -89,6 +81,7 @@ def draw_shifted_bbx(dir, subset, imgName, classId):
     predictions, image = get_predictions(dir, subset, imgName, classId)
     imgName = os.path.splitext(imgName)[0] + "_shifted.jpg"
     img_height, img_width = image.shape[:2]
+    annotator = Annotator(image, line_width=2, example=str(classId))
 
     for bounding_box in predictions:
         x0 = bounding_box['x'] - bounding_box['width'] / 2 + 0.04 * img_width
@@ -96,19 +89,9 @@ def draw_shifted_bbx(dir, subset, imgName, classId):
         y0 = bounding_box['y'] - bounding_box['height'] / 2 + 0.04 * img_height
         y1 = bounding_box['y'] + bounding_box['height'] / 2 + 0.04 * img_height
     
-        start_point = (int(x0), int(y0))
-        end_point = (int(x1), int(y1))
-        cv.rectangle(image, start_point, end_point, color=(0,0,255), thickness=2)
-    
-        cv.putText(
-            image,
-            "misplaced BB",
-            (int(x0), int(y1) + 20),
-            fontFace = cv.FONT_HERSHEY_TRIPLEX,
-            fontScale = 0.7,
-            color = (255, 255, 255),
-            thickness=1
-        )
+        annotator.box_label(box=(x0, y0, x1, y1), label=class_names[bounding_box['classId']], color=colors(bounding_box['classId'], True))
+
+    image = annotator.result()
     if not os.path.exists(os.path.join(dir, 'bbox_anot/')):
         os.mkdir(os.path.abspath(os.path.join(dir, 'bbox_anot/')))
     cv.imwrite(os.path.join(dir, 'bbox_anot/', imgName), image)
@@ -135,20 +118,20 @@ if __name__ == "__main__":
     
     if not os.path.exists(arg.dir):
         raise FileNotFoundError(f"Directory {arg.dir} does not exist")
-    if arg.classId and not all(isinstance(i, int) and 0<=i and i<=5 for i in arg.classId):
-        raise ValueError(f"Class ID {arg.classId} is not valid. Valid IDs are {class_names.keys()}")
+    if arg.class_id and not all(isinstance(i, int) and 0<=i and i<=5 for i in arg.class_id):
+        raise ValueError(f"Class ID {arg.class_id} is not valid. Valid IDs are {class_names.keys()}")
 
     if os.path.exists(os.path.join(arg.dir, 'images/train', arg.img)):
-        draw_bbs(os.path.abspath(arg.dir), 'train', arg.img, arg.classId)
-        if arg.shiftedBbox:
-            draw_shifted_bbx(os.path.abspath(arg.dir), 'train', arg.img, arg.classId)
+        draw_bbs(os.path.abspath(arg.dir), 'train', arg.img, arg.class_id)
+        if arg.shifted_bbox:
+            draw_shifted_bbx(os.path.abspath(arg.dir), 'train', arg.img, arg.class_id)
     elif os.path.exists(os.path.join(arg.dir, 'images/val', arg.img)):
-        draw_bbs(os.path.abspath(arg.dir), 'val', arg.img, arg.classId)
-        if arg.shiftedBbox:
-            draw_shifted_bbx(os.path.abspath(arg.dir), 'val', arg.img, arg.classId)
+        draw_bbs(os.path.abspath(arg.dir), 'val', arg.img, arg.class_id)
+        if arg.shifted_bbox:
+            draw_shifted_bbx(os.path.abspath(arg.dir), 'val', arg.img, arg.class_id)
     elif os.path.exists(os.path.join(arg.dir, 'images/test', arg.img)):
-        draw_bbs(os.path.abspath(arg.dir), 'val', arg.img, arg.classId)
-        if arg.shiftedBbox:
-            draw_shifted_bbx(os.path.abspath(arg.dir), 'val', arg.img, arg.classId)
+        draw_bbs(os.path.abspath(arg.dir), 'val', arg.img, arg.class_id)
+        if arg.shifted_bbox:
+            draw_shifted_bbx(os.path.abspath(arg.dir), 'val', arg.img, arg.class_id)
     else:
         raise FileNotFoundError(f"Image {arg.img} does not exist")
