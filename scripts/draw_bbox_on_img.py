@@ -19,12 +19,15 @@ import os
 import argparse
 import cv2 as cv
 
+from utils.plots import Annotator, colors
+
 class_names = {
     0: 'small load carrier',
     1: 'forklift',
     2: 'pallet',
     3: 'stillage',
-    4: 'pallet truck'
+    4: 'pallet truck',
+    5: 'person'
 }
 
 def get_predictions(dir, subset, imgName, classId):
@@ -51,26 +54,32 @@ def get_predictions(dir, subset, imgName, classId):
 def draw_bbs(dir, subset, imgName, classId):
 
     predictions, image = get_predictions(dir, subset, imgName, classId)
+    annotator = Annotator(image, line_width=3, example=str(classId))
     
     for bounding_box in predictions:
         x0 = bounding_box['x'] - bounding_box['width'] / 2
         x1 = bounding_box['x'] + bounding_box['width'] / 2
         y0 = bounding_box['y'] - bounding_box['height'] / 2
         y1 = bounding_box['y'] + bounding_box['height'] / 2
+
+        annotator.box_label(x0, y0, x1, y1, label=class_names[bounding_box['classId']], color=colors(bounding_box['classId'], True))
     
-        start_point = (int(x0), int(y0))
-        end_point = (int(x1), int(y1))
-        cv.rectangle(image, start_point, end_point, color=(0,255,0), thickness=2)
+        # start_point = (int(x0), int(y0))
+        # end_point = (int(x1), int(y1))
+        # cv.rectangle(image, start_point, end_point, color=(0,255,0), thickness=2)
     
-        cv.putText(
-            image,
-            class_names[bounding_box['classId']],
-            (int(x0), int(y1) + 20),
-            fontFace = cv.FONT_HERSHEY_TRIPLEX,
-            fontScale = 0.7,
-            color = (255, 255, 255),
-            thickness=1
-        )
+        # cv.putText(
+        #     image,
+        #     class_names[bounding_box['classId']],
+        #     (int(x0), int(y1) + 20),
+        #     fontFace = cv.FONT_HERSHEY_TRIPLEX,
+        #     fontScale = 0.7,
+        #     color = (255, 255, 255),
+        #     thickness=1
+        # )
+    
+    image = annotator.result()
+
     if not os.path.exists(os.path.join(dir, 'bbox_anot/')):
         os.mkdir(os.path.abspath(os.path.join(dir, 'bbox_anot/')))
     cv.imwrite(os.path.join(dir, 'bbox_anot/', imgName), image)
@@ -126,7 +135,7 @@ if __name__ == "__main__":
     
     if not os.path.exists(arg.dir):
         raise FileNotFoundError(f"Directory {arg.dir} does not exist")
-    if arg.classId and not all(isinstance(i, int) and 0<=i and i<=4 for i in arg.classId):
+    if arg.classId and not all(isinstance(i, int) and 0<=i and i<=5 for i in arg.classId):
         raise ValueError(f"Class ID {arg.classId} is not valid. Valid IDs are {class_names.keys()}")
 
     if os.path.exists(os.path.join(arg.dir, 'images/train', arg.img)):
