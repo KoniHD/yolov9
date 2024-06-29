@@ -19,7 +19,7 @@ srun \
 --mpi=pmi2 --ntasks-per-node=2 \
 --container-mounts='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000:/workspace' \
 --container-image='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000/Pytorch+24.03-py3+yolov9.sqsh' \
-torchrun --nproc_per_node 2 --master_port 9527 train_dual.py \
+torchrun --nproc_per_node 2 --master_port ${MASTER_PORT:-9528} /workspace/yolov9/train_dual.py \
 --workers 8 --device 0,1 --sync-bn --batch 8 \
 --epochs 250 --min-items 0 --img 800 \
 --name Lauf_1 \
