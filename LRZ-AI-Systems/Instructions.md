@@ -25,12 +25,12 @@ Also the links of the documentation page of LRZ seem to change quite regularly s
 # Prerequisits
 
 * **Access to LRZ Linux Cluster** &rarr; can only be granted by Master User of your institution
-  (at TUM probably every chair has one Master User so just ask around :smiley: *Hint:* `it-helpdesk@\<yourchair>.tum.de` is probably a good start for thsi)
+  (at TUM probably every chair has one Master User so just ask around :smiley: *Hint:* `it-helpdesk@\<yourchair>.tum.de` is probably a good start for this).
     * By getting access to the Linux Cluster you obtain a new "LRZ-Kennung"/`<lrz-userid>` (something like `go42tum`) from your respective Master User, which you will have to use going further.
     * Your account / "LRZ-Kennung" is also tied to a project. Like the "LRZ-Kennung" this project has a rather cryptic name (like `t7121`) and is also important for some of the following steps, as well as issues submited to the [LRZ service desk](https://servicedesk.lrz.de/en/selfservice#). You can find out your project name on the [IDM Portal](https://idmportal2.lrz.de).
     * **IMPORTANT** Access to Linux Cluster and its services already falls under [German export regulations](https://www.lrz.de/wir/regelwerk/exportkontrollverordnungen_en/) so you will have to add your citizenship to the account in question. And probably sign somehting. At least you will have to agree to these regulations the first time you access the [IDM Portal](https://idmportal2.lrz.de).
 * [Access to LRZ AI Systems](#access-to-lrz-ai-systems) &rarr; at the current state of writing this you need to request it yourself by submitting a request at [LRZ service desk](https://servicedesk.lrz.de/en/selfservice#). However, I was told this might change in the future such that the master user can give you access directly. So if you cannot request the access yourself anymore ask you master user.
-* *Optional* [Nvidia NGC](#nvidia-ngc-containers) account to pull desired NCG container images. This is usefull for batch jobs or command line jobs.
+* *Optional* [Nvidia NGC](#nvidia-ngc-containers) account to pull desired NCG container images. This is usefull/necessary for batch jobs or command line jobs.
 * *Optional* (but probably makes sense): [Access to AI Systems DSS](#access-to-ai-systems-dss) (Data Science Storage)
 
 ## Access to LRZ AI Systems
@@ -39,15 +39,15 @@ Also the links of the documentation page of LRZ seem to change quite regularly s
 
 Currently you need submit a reuqest at [LRZ service desk](https://servicedesk.lrz.de/en/selfservice#) for
 access:
-1. Login in with the "LRZ-Kennung" that already has Linux Cluster permission ( *Note:* It doesn't work with your regular old "TUM-Kennung" or whatever you have. Hence the need for Linux Cluster permissions.)
-2. Click **create new incident**
-3. Under **High performance computing** select **AI Systems**
-4. Select something along the lines of **Access AI Systems**
-5. Describe the usecase briefly so that they can approve your need of GPU resources (Don't worry if you need more resources later on I was given all possible graphics resources eventough I never asked for the best. :grinning: )
+1. Login in with the "LRZ-Kennung" that already has Linux Cluster permission. *Note:* It doesn't work with your regular old "TUM-Kennung" or whatever you have. Hence the need for Linux Cluster permissions.
+2. Click **create new incident**.
+3. Under **High performance computing** select **AI Systems**.
+4. Select something along the lines of **Access AI Systems**.
+5. Describe the usecase briefly so that they can approve your need of GPU resources. (Don't worry if you need more resources later on I was given all possible graphics resources eventough I never asked for the best. :grinning:.)
 6. Once you access is granted you are free login to the LRZ AI node via `ssh <lrz-userid>@login.ai.lrz.de` and jump to section [Working on the LRZ AI Systems](#working-on-the-lrz-ai-system).
 
-*Optional* If you don't like the default shell you can switch that in the [IDM Portal](https://idmportal2.lrz.de) and select
-a different shell (I'm using zsh :smiley:)
+*Optional:* If you don't like the default shell you can switch that in the [IDM Portal](https://idmportal2.lrz.de) and select
+a different shell (I'm using zsh :smiley:).
 
 ## Nvidia NGC Containers
 
@@ -58,14 +58,14 @@ a different shell (I'm using zsh :smiley:)
 Also NGC container are Docker images and enroot is based on Docker as well, in case of resulting errors you might also want to consider a Docker problem (but then you messed up bad).
 
 Finally, in order to later pull the desired NGC container image you need a Nvidia account. To do this:
-1. Visit [NGC Container](https://catalog.ngc.nvidia.com)
-2. Create an account and sign in
-3. On your account badge go to **Setup**
-4. At the state of this instruction you need to **Generate Personal Key**
+1. Visit [NGC Container](https://catalog.ngc.nvidia.com).
+2. Create an account and sign in.
+3. On your account badge go to **Setup**.
+4. At the state of this instruction you need to **Generate Personal Key**.
     * *Note* the official LRZ documentation uses **Generate API Key** for this step. However, the Nvidia NGC page recommends the **Personal Keys** if you just want to pull container images. Additionally, you can deactivate or change **Personal Keys** while **API Keys**, once generated, cannot be changed or deleted which might be a securtiy risk (at least I think but I'm not an expert :grin:). For the following options both options work fine though.
-5. Copy the key value
-6. On the LRZ AI system (inside your personal `$HOME` directory) create a `enroot` directory containing a `.credentials` file
-7. Inside the `.credentials` file copy the following lines where `<KEY>` is substituted with the previously copied key
+5. Copy the key value.
+6. On the LRZ AI system (inside your personal `$HOME` directory) create a `enroot` directory containing a `.credentials` file.
+7. Inside the `.credentials` file copy the following lines where `<KEY>` is substituted with the previously copied key.
 ```
 machine nvcr.io login $oauthtoken password <KEY>
 machine authn.nvidia.com login $oauthtoken password <KEY>
@@ -111,7 +111,7 @@ exit
 enroot export --output <desired_image_name>.sqsh MyContainerName
 ```
 
-&rarr; By default this newly prepared container image is in your `$HOME` directory, accessible on the login node. It can now be used by its path (find out the path using `pwd` command) for a [batch execution](), [interactive command line execution](#work-with-command-line-for-interactive-job-execution) or even on the [Website Interface](#work-with-website-interface)
+&rarr; By default this newly prepared container image is in your `$HOME` directory, accessible on the login node. It can now be used by its path (find out the path using `pwd` command) for a [batch execution](), [interactive command line execution](#work-with-command-line-for-interactive-job-execution) or even on the [Website Interface](#work-with-website-interface).
 
 ## Access to AI Systems DSS
 
@@ -120,10 +120,10 @@ To get access you need to contact a so-called 'data curator', which likely (at m
 This is because you personally don't have permissions to create a directory in `/dss/dssfs04`. 
 
 So the steps are:
-1. Find the 'data curator' responsibe for the LRZ Project you are part of
-2. Request access and wait for a confirmation email from the LRZ
-3. Klick the link received in the Email and accept the terms and conditions. &rarr; Now you have to wait a couple of hours until you get the access
-4. Test your access by login in via `ssh <lrz-userid>@login.ai.lrz.de` and then `cd /dss/dssfs04/<your_dir_path>`. If you are able to create files here you are good to go for uploading your data and the ML model. (Creating files: `touch filename.txt`)
+1. Find the 'data curator' responsibe for the LRZ Project you are part of.
+2. Request access and wait for a confirmation email from the LRZ.
+3. Klick the link received in the Email and accept the terms and conditions. &rarr; Now you have to wait a couple of hours until you get the access.
+4. Test your access by login in via `ssh <lrz-userid>@login.ai.lrz.de` and then `cd /dss/dssfs04/<your_dir_path>`. If you are able to create files here you are good to go for uploading your data and the ML model. (Creating files: `touch filename.txt`).
 
 *Nice-to-know:* Somewhere in `<your_dir_path>` you should be able to find your project name as mentioned in the [Prerequisits](#prerequisits).
 
@@ -133,7 +133,7 @@ So the steps are:
 
 In order to use the LRZ AI Systems make sure you are connected to the Munich Scientific Network. This means you are either connected to a Munich University Wifi or by use [EduVPN](https://doku.lrz.de/vpn-10333177.html?showLanguage=en_GB). Only then can you `ssh` into the system or access [login.ai.lrz.de](https://login.ai.lrz.de) for the [Website Interface](#work-with-website-interface).
 
-**Important** note that after `ssh` login via 
+**Important** note that after `ssh` login via:
 ```
 ssh <lrz-userid>@login.ai.lrz.de
 ```
@@ -146,7 +146,7 @@ You can see that you are on the login node because your command line looks somet
 The actual work is then performed on different server nodes if you use the [command line execution](#work-with-command-line-for-interactive-job-execution).
 
 *Note:* if you have access to the previously described DSS I'd recommend creating a symbolic link from your DSS storage to your `$HOME` directory for easier use. \
-This can be done via
+This can be done via:
 ```
 ln -s /dss/dssfs04/<your_dir_path> <link_name>
 ```
@@ -159,7 +159,7 @@ ln -s /dss/dssfs04/<your_dir_path> <link_name>
 For ease of use, and because it is necessary to always download the data again when using Google's Colab, I wrote the `get_loco.sh` and the `transform_to_yolo_format.py` script which automatically download the LOCO dataset and transform it to fit YOLO standards.
 
 These scripts also come in handy when preparing the data for execution on the LRZ AI System.
-Firstly, I would recommend to
+Firstly, I would recommend to:
 ```
 git clone https://github.com/KoniHD/yolov9.git
 ```
@@ -170,17 +170,17 @@ To download the dataset perform the following command in the lcoation you want t
 ```
 ./scripts/get_loco.sh
 ```
-*Hint:* If you cloned the repo you will have to make the script executable first with 
+*Hint:* If you cloned the repo you will have to make the script executable first with:
 ```
 chmod +x ./scripts/get_loco.sh
 ```
 
-After the dataset is downloaded it is ready to be used by an object detection model using the 'MSCOCO' data anotation format. However, if needed it can be transformed using the `transform_to_yolo_format.py` (which btw can also be used if you just want to **get rid of the subdirectory structure** the LOCO dataset naturally comes with or if you only want to **convert the anotation format**) \
-For parameter explanation just use 
+After the dataset is downloaded it is ready to be used by an object detection model using the 'MSCOCO' data anotation format. However, if needed it can be transformed using the `transform_to_yolo_format.py` (which btw can also be used if you just want to **get rid of the subdirectory structure** the LOCO dataset naturally comes with or if you only want to **convert the anotation format**). \
+For parameter explanation just use:
 ```
 python3 ./scripts/transform_to_yolo_format.py --help
 ```
-If you want to use it for further usage with the YOLOv9 model use these parameters
+If you want to use it for further usage with the YOLOv9 model use these parameters:
 ```
 python3 ./scripts/transform_to_yolo_format.py -d ./<path_to_loco_dir> --convert-annotations --convert-images
 ```
@@ -199,17 +199,35 @@ If you want to train the model on the LRZ Systems I'd recommend to execute both 
 For this method you might want to get familiar with slurm for job scheduling (Documentation can be found here: [SLURM Doc](https://slurm.schedmd.com/documentation.html) with the most important commands and options being here: [SLURM Commands](https://slurm.schedmd.com/pdfs/summary.pdf).
 
 The steps to get an interactive job running are essentially the same as discribed in [Pull and Customize NGC Container](#pull-and-customize-ngc-container-for-the-lrz-ai-system) with some minor changes:
-* If you already have a configured container image ready there is no need for step 4. Instead you can continue with step 5, 6, 7
+* If you already have a configured container image ready there is no need for step 4. Instead you can continue with step 5, 6, 7.
 * Instead of step 8 you perform your training here and then finish the same way.
 
-**NOTE** I have yet to test mounting data into the container so this execution method is still pretty useless :gin:.
+**NOTE** I have yet to test mounting data into the container so this execution method is still pretty useless :grin:.
 
 ## Work with Batch jobs
 **HINT**: the official LRZ documentation for this step can be found [here](https://doku.lrz.de/7-running-applications-as-batch-jobs-on-the-lrz-ai-systems-10746643.html).
 
-An example batch script can be found in the cloned yolov9 git repo under: `./LRZ-AI-Systems/lrz-execution.sbatch`.
+An example batch script can be found under: `./LRZ-AI-Systems/lrz-execution.sbatch` or `./LRZ-AI-Systems/lrz-distributed-execution.sbatch`.
 
-**DISCLAIMER** Did not work yet. I hope to incorperate this last process later.
+For this script to work however there are a few comments about the structure first of `#SBATCH` instructions I want to highlight:
+
+* The name you give the job is important because you can later use it to get a status on said job via:
+```
+squeue --name=<your-job-name>
+```
+* Eventhough I suspect that if you select more than one gpu (e.g.: `--gres=gpu:2`) that these GPUs will be on the same node. However I am unsure of that so I would still specify `--nodes=1` to be sure to avoid the hustle with multiple nodes.
+* The batch script has to provide an error as well as an output path. In order to name them consistently SLURM offers some [options](https://slurm.schedmd.com/sbatch.html#SECTION_FILENAME-PATTERN) for a filename patter.
+* The notification via email is *optional*, however I found it very useful. Options for notifications can also be found in the [sbatch documentation](https://slurm.schedmd.com/sbatch.html). **Important:** LRZ requires a vaild email address to be specified for this process, otherwise email notifications will be blocked for your account &rarr; double check the address! :smiley:
+* If your script can be started without modifications after an interuptions you can leave out the SBATCH `--no-requeue` option.
+* To avoid having surprising env variables from your login config it is helpful to use the `--export=NONE` option and set env variables later on in the script.
+
+Now the real computing then should be performed by passing the script `srun` command. (Currently I am unsure if more than one `srun` command is valid in a single `.sbatch` script so there might be a limitation to the compute you can do.) \
+However, before the `srun` command you can perform short bash commands to setup the job like setting your own env variables. Just make sure to also pass these variables to `srun` using the `--export=<your-vars>` option because env vars set in the `.sbatch` script before this point are not valid in the `srun` command and hence your script otherwise.
+
+
+### Mutli-GPU process via Batch job
+
+If you really need this, this manual is probably not for you :grin:! Sorry but I tried really hard to get my script to work in a distributed fashion but it is **HARD!!**
 
 ## Work with website interface
 
@@ -218,14 +236,14 @@ An example batch script can be found in the cloned yolov9 git repo under: `./LRZ
 *NOTE:* Definetly the easiest option for most tasks so refer to this please! (Also this option is closest to Google's Colab if you are looking for that) :smiley:\
 Also currently it is the only working way of accessing the LRZ computing resources.
 1. Make sure you are connected to the Munich Scientific Network meaning you are connected to a Munich University Wifi or by using [EduVPN](https://doku.lrz.de/vpn-10333177.html?showLanguage=en_GB).
-2. Login to [LRZ AI](https://login.ai.lrz.de)
-3. Go to **Interactive Apps**
-4. Select **Jupyter Notebook** and chose the resources needed (they are specified very well here!!) and specify the time this notebook will be up. **Careful** after the time runs up the notebook plus data aparently will be shutdown (I don't know if you also loose your data too yet)
+2. Login to [LRZ AI](https://login.ai.lrz.de).
+3. Go to **Interactive Apps**.
+4. Select **Jupyter Notebook** and chose the resources needed (they are specified very well here!!) and specify the time this notebook will be up. **Careful** the notebook shuts down automatically after the time runs up so make sure to schedule enough time or regularly save your training progress.
     * **Note:** Using the IWS gives you access only to a single GPU. Hence, distributed computing over multiple GPUs for more VRAM is not possible via this method. Once you maxed out the VRAM of a single GPU you might need to look at options.
     * The A100 (and if LRZ gets them later the H100) cards are set upt using a technology caleld [MIG slice](https://www.nvidia.com/en-us/technologies/multi-instance-gpu/). This means you don't even get access to a full GPU but rather a slice. In practice this should not affect your training.
 5. You can select between 2 possible default *enroot* container images to let your Jupyter Notebook run in: One uses Tensorflow the other uses PyTorch. \
 However, if you set up the credentials for NGC containers as discribed [previously](#nvidia-ngc-containers) you can also select **custom** and past the NGC container tag from the [NGC Container Catalog](https://catalog.ngc.nvidia.com) into the field.
-6. For some reason I was unable to find the correct mounting point on the AI System. Failed attempts were: `/dss/dssfs04/my-data:/jupyter_session` &rarr; crashed notebook before start; `/dss/dssfs04/my-data:/data` and `/dss/dssfs04/my-data:/mnt/data` both just did not work. Talking to the support, I was affirmd, that the current best sollution is to have a symlink as described [here](#working-on-the-lrz-ai-system)
+6. For some reason I was unable to find the correct mounting point on the AI System. Failed attempts were: `/dss/dssfs04/my-data:/jupyter_session` &rarr; crashed notebook before start; `/dss/dssfs04/my-data:/data` and `/dss/dssfs04/my-data:/mnt/data` both just did not work. Talking to the support, I was affirmd, that the current best sollution is to have a symlink as described [here](#working-on-the-lrz-ai-system).
 7. After that your request will be automatically queued in the to LRZ AI System and once it's the resources are free the website will automatically provide you with a link to a Jupyter Notebook.
 8. Most Python libraries are already included if you chose the right *enroot* container from step 5. However, you might want to use different packages. In this case I'd recommend pip installing them right at the beginning. To be sure they are installed you should then reload the Notebook kernel.
 
