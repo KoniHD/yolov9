@@ -16,9 +16,11 @@
 #Setup of execution environment
 #SBATCH --export=NONE
 
-WORLD_SIZE=1
-RANK=-1
-LOCAL_RANK=-1
+export WORLD_SIZE=1
+export RANK=-1
+export LOCAL_RANK=-1
+export MASTER_ADDR="localhost"
+export MASTER_PORT=29400
 
 YOLO='/workspace/yolov9'
 Lauf_num='Lauf_1'
@@ -32,11 +34,11 @@ Lauf_num='Lauf_1'
 if [ -f "/dss/dsshome1/0D/ge78taz2/bachelor-thesis/dss-for-ai/weights/latest.pt" ]; then
     WEIGHTS_PATH="/workspace/weights/latest.pt"
 else
-    WEIGHTS_PATH="/workspace/weights/yolo-e.pt"
+    WEIGHTS_PATH="/workspace/weights/yolov9-e.pt"
 fi
 
 # Set up the container environment
-srun \
+srun --export=WORLD_SIZE,RANK,LOCAL_RANK,MASTER_ADDR,MASTER_PORT \
 --container-mounts='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000:/workspace' \
 --container-image='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000/Pytorch+24.03-py3+yolov9.sqsh' \
 python3 ${YOLO}/train_dual.py --batch 8 --epochs 250 --device 0 --min-items 0 --img 800 \
