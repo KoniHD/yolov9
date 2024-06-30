@@ -14,6 +14,11 @@
 #SBATCH --time=05:00:00
 #SBATCH --no-requeue
 #Setup of execution environment
+#SBATCH --export=NONE
+
+WORLD_SIZE=1
+RANK=-1
+LOCAL_RANK=-1
 
 YOLO='/workspace/yolov9'
 Lauf_num='Lauf_1'
@@ -35,7 +40,7 @@ srun \
 --container-mounts='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000:/workspace' \
 --container-image='/dss/dssfs04/lwp-dss-0002/t7431/t7431-dss-0000/Pytorch+24.03-py3+yolov9.sqsh' \
 python3 ${YOLO}/train_dual.py --batch 8 --epochs 250 --device 0 --min-items 0 --img 800 \
---name Lauf_1 \
+--name ${Lauf_num} \
 --data ${YOLO}/loco-container.yaml \
 --weights ${WEIGHTS_PATH} \
 --cfg ${YOLO}/models/detect/yolov9_custom.yaml \
