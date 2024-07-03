@@ -34,8 +34,8 @@ curl -L $url -o $f && unzip -q $f && rm -r $f # download, unzip, remove in backg
 mkdir -p $d/train
 mkdir -p $d/val
 mv ./loco-main/rgb/* $d
-find $d -type f -name '*train*' -exec mv {} $d/train \; 2>/dev/null
-find $d -type f -name '*val*' -exec mv {} $d/val \; 2>/dev/null
+# find $d -type f -name '*train*' -exec mv {} $d/train \; 2>/dev/null
+# find $d -type f -name '*val*' -exec mv {} $d/val \; 2>/dev/null
 rm $d/loco-all-v1.json  # removing this file as I am later not using it. In case you need it, comment this line
 
 wait # finish background tasks
@@ -60,14 +60,18 @@ set5='subset-5'     # training
 # Move images to correct directory
 mkdir -p $d/train
 mkdir -p $d/val
+
+for set in $set1 $set2 $set3 $set4 $set5; do
+    mv ./dataset/$set $d
+done
 # train directory
-for set in $set2 $set3 $set5; do
-    mv ./dataset/$set $d/train
-done
+# for set in $set2 $set3 $set5; do
+#     mv ./dataset/$set $d/train
+# done
 # val directory
-for set in $set1 $set4; do
-    mv ./dataset/$set $d/val
-done
+# for set in $set1 $set4; do
+#     mv ./dataset/$set $d/val
+# done
 
 wait # finish background tasks
 rm -rf ./dataset
