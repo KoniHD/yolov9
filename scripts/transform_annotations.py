@@ -73,7 +73,7 @@ def convert_bbox_coco2yolo(img_width, img_height, bbox):
 
     return [x, y, w, h]
 
-# This script is used to transform the dataset to the YOLO format
+# This function is used to transform the dataset to the YOLO format
 # For use in GitHub Codespaces use '/workspaces' instead of content
 def transform_images_to_yolo_format(dir):
     temp_dir = os.path.abspath(os.path.join(dir, '../', 'temp'))
@@ -112,43 +112,57 @@ def transform_images_to_yolo_format(dir):
 
 # Needs refactoring:
 # - Find out if .6f is not too much precision
-# - Images w/o annotations should get empty .txt files
 def convert_json_to_yolo_txt(dir):
 
     custom_structure = False
+    existing_txt_files = {"train": set(), "val": set(), "test": set(), "root": set()}
+
     if os.path.exists(os.path.join(dir, 'train')):
-        convert_json_to_yolo_txt(os.path.join(dir, 'train'))
+        existing_txt_files["train"] = convert_json_to_yolo_txt(os.path.join(dir, 'train'))        
         custom_structure = True
     if os.path.exists(os.path.join(dir, 'val')):
-        convert_json_to_yolo_txt(os.path.join(dir, 'val'))
+        existing_txt_files["val"] = convert_json_to_yolo_txt(os.path.join(dir, 'val'))
         custom_structure = True
     if os.path.exists(os.path.join(dir, 'test')):
-        convert_json_to_yolo_txt(os.path.join(dir, 'test'))
+        existing_txt_files["test"] = convert_json_to_yolo_txt(os.path.join(dir, 'test'))
         custom_structure = True
     if custom_structure:
+        create_missing_txt_files(os.path.abspath(os.path.join(dir, '../')), existing_txt_files)
         print("Finished working on labels with custom structure")
         return
+    
+    tmp_txt_files = set()
+    files = [f for f in os.listdir(dir) if f.endswith('.json') or f.endswith('.txt')]
 
-    json_files = [f for f in os.listdir(dir) if f.endswith('.json')]
+    for file in tqdm(files, desc=f"Converting to YOLO in {dir}"):
+        if file.endswith('.json'):
+            with open(os.path.join(dir, file), 'r') as f:
+                json_data = json.load(f)
+            for image in json_data["images"]:
+                img_id = image["id"]
+                img_name = image["file_name"]
+                img_width = image["width"]
+                img_height = image["height"]
 
-    for json_file in tqdm(json_files, desc=f"Converting JSON to YOLO in {dir}"):
-        with open(os.path.join(dir, json_file), 'r') as f:
-            json_data = json.load(f)
-        for image in json_data["images"]:
-            img_id = image["id"]
-            img_name = image["file_name"]
-            img_width = image["width"]
-            img_height = image["height"]
+                anno_in_image = [anno for anno in json_data["annotations"] if anno["image_id"] == img_id]
+                anno_txt = os.path.join(dir, img_name.replace(".jpg", ".txt"))
+                with open(anno_txt, "w") as f:
+                    for anno in anno_in_image:
+                        class_id = class_indices[anno["category_id"]]
+                        bbox_COCO = anno["bbox"]
+                        x, y, w, h = convert_bbox_coco2yolo(img_width, img_height, bbox_COCO)
+                        f.write(f"{class_id} {x:.6f} {y:.6f} {w:.6f} {h:.6f}\n")
+                tmp_txt_files.add(img_name)
+            os.remove(os.path.join(dir, file))
+        else:
+            tmp_txt_files.add(file.replace(".txt", ".jpg"))
+    
+    if not (custom_structure or any(str in dir for str in {'train', 'val', 'test'})):
+        existing_txt_files["root"] = tmp_txt_files
+        create_missing_txt_files(os.path.abspath(os.path.join(dir, '../')), existing_txt_files)
+        return
 
-            anno_in_image = [anno for anno in json_data["annotations"] if anno["image_id"] == img_id]
-            anno_txt = os.path.join(dir, img_name.replace(".jpg", ".txt"))
-            with open(anno_txt, "w") as f:
-                for anno in anno_in_image:
-                    class_id = class_indices[anno["category_id"]]
-                    bbox_COCO = anno["bbox"]
-                    x, y, w, h = convert_bbox_coco2yolo(img_width, img_height, bbox_COCO)
-                    f.write(f"{class_id} {x:.6f} {y:.6f} {w:.6f} {h:.6f}\n")
-        os.remove(os.path.join(dir, json_file))
+    return tmp_txt_files
 
 def create_loco_yaml(dir):
     class_names = []
@@ -180,6 +194,36 @@ def create_loco_yaml(dir):
         f.write('\nnc: 5\nnames:')
         for i, name in enumerate(class_names):
             f.write(f'\n  {i}: {name}')
+
+def create_missing_txt_files(dir, existing_files):
+    curr_dir = os.path.abspath(os.path.join(dir, 'images')) if not 'images' in dir else dir
+    if os.path.exists(os.path.join(curr_dir, 'train')):
+        create_missing_txt_files(os.path.join(curr_dir, 'train'), existing_files["train"])
+    if os.path.exists(os.path.join(curr_dir, 'val')):
+        create_missing_txt_files(os.path.join(curr_dir, 'val'), existing_files["val"])
+    if os.path.exists(os.path.join(curr_dir, 'test')):
+        create_missing_txt_files(os.path.join(curr_dir, 'test'), existing_files["test"])
+
+    if isinstance(existing_files, dict):
+        existing_files = existing_files["root"]
+
+    file_list = os.listdir(dir)
+    file_list = {f for f in file_list if f.endswith('.jpg')}
+    missing_files = file_list - existing_files
+
+    labels_dir = os.path.abspath(os.path.join(dir, '../../labels'))
+    if 'train' in dir:
+        labels_dir = os.path.abspath(os.path.join(dir, '../../labels', 'train'))
+    elif 'val' in dir:
+        labels_dir = os.path.abspath(os.path.join(dir, '../../labels', 'val'))
+    elif 'test' in dir:
+        labels_dir = os.path.abspath(os.path.join(dir, '../../labels', 'test'))
+
+    for file in missing_files:
+        with open(os.path.join(labels_dir, file.replace(".jpg", ".txt")), 'w') as f:
+            pass
+
+    
 
 def aggregate_coco_annotations(dir, name=None):
     aggregated_data = {"images": [], "categories": [], "annotations": []}
@@ -227,28 +271,26 @@ def set_train_val_split(dir, train, val, test):
     os.makedirs(os.path.join(images_dir, 'val'), exist_ok=True)
     os.makedirs(os.path.join(images_dir, 'test'), exist_ok=True)
 
-    for _, subdir, file_list in os.walk(os.path.join(labels_dir)):
-        subdir.clear()
+    for dir, _, file_list in os.walk(os.path.join(labels_dir)):
         for file_name in file_list:
             if file_name.endswith('.json'):
                 match = re.search(r'sub(\d+)', file_name)
                 if match and int(match.group(1)) in train:
-                    shutil.move(os.path.join(labels_dir, file_name), os.path.join(labels_dir, 'train', file_name))
+                    shutil.move(os.path.join(dir, file_name), os.path.join(labels_dir, 'train', file_name))
                 elif match and int(match.group(1)) in val:
-                    shutil.move(os.path.join(labels_dir, file_name), os.path.join(labels_dir, 'val', file_name))
+                    shutil.move(os.path.join(dir, file_name), os.path.join(labels_dir, 'val', file_name))
                 elif match and (int(match.group(1)) in test):
-                    shutil.move(os.path.join(labels_dir, file_name), os.path.join(labels_dir, 'test', file_name))
+                    shutil.move(os.path.join(dir, file_name), os.path.join(labels_dir, 'test', file_name))
 
-    for _, subdir, _ in os.walk(os.path.join(images_dir)):
+    for dir, subdir, _ in os.walk(os.path.join(images_dir)):
         for subset in subdir:
-            match = re.search(r'(\d+)', subset)
+            match = re.search(r'subset-(\d+)', subset)
             if match and int(match.group(1)) in train:
-                shutil.move(os.path.join(images_dir, subset), os.path.join(images_dir, 'train', subset))
+                shutil.move(os.path.join(dir, subset), os.path.join(images_dir, 'train', subset))
             elif match and int(match.group(1)) in val:
-                shutil.move(os.path.join(images_dir, subset), os.path.join(images_dir, 'val', subset))
+                shutil.move(os.path.join(dir, subset), os.path.join(images_dir, 'val', subset))
             elif match and int(match.group(1)) in test:
-                shutil.move(os.path.join(images_dir, subset), os.path.join(images_dir, 'test', subset))
-        subdir.clear()
+                shutil.move(os.path.join(dir, subset), os.path.join(images_dir, 'test', subset))
 
 
 
@@ -257,7 +299,7 @@ def three_lists(arg):
         # Split the input string by '/' to separate the two lists
         split_subset = arg.split('/')
         if len(split_subset) != 3:
-            raise argparse.ArgumentTypeError("Input must be two lists of integers separated by a slash")
+            raise argparse.ArgumentTypeError("Input must be three lists of integers separated by a slash")
         
         # For each part, split by ',' and convert each item to an integer
         if split_subset[0]:
@@ -278,6 +320,16 @@ def three_lists(arg):
         # Raise an error if conversion to integer fails
         raise argparse.ArgumentTypeError("Each list must contain integers separated by commas")
 
+def check_subset(data_split):
+    if not all(1 <= num <= 5 for num in data_split[0]) and \
+        all(1 <= num <= 5 for num in data_split[1]) and \
+        all(1 <= num <= 5 for num in data_split[2]):
+        raise ValueError("Allowed subset numbers must be between 1 and 5 inclusive")
+    if any(num in data_split[1] for num in data_split[0]) or \
+        any(num in data_split[2] for num in data_split[1]) or \
+        any(num in data_split[0] for num in data_split[2]):
+        raise ValueError("Subsets must be unique.")
+
 def parse_args():
     parser = argparse.ArgumentParser()
     # for use in GitHub Codespaces use '/workspaces' as directory
@@ -297,10 +349,7 @@ if __name__ == "__main__":
     if arg.convert_to_yolo and arg.convert_to_coco:
         raise ValueError("Only one conversion option can be selected")
     
-    if not all(1 <= num <= 5 for num in arg.custom_train_val[0]) and \
-        all(1 <= num <= 5 for num in arg.custom_train_val[1]) and \
-        all(1 <= num <= 5 for num in arg.custom_train_val[2]):
-        raise ValueError("Custom train/val split is not supported yet")
+    check_subset(arg.custom_train_val)
     set_train_val_split(arg.dir, arg.custom_train_val[0], arg.custom_train_val[1], arg.custom_train_val[2])
 
     if arg.convert_images:
