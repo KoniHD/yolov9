@@ -488,8 +488,8 @@ def parse_opt(known=False):
 
 def main(opt, callbacks=Callbacks()):
     global RANK, LOCAL_RANK
-    assert not (opt.rank and RANK != -1), 'Setting --rank conflicts with DDP mode'
-    assert not (opt.local_rank and LOCAL_RANK != -1), 'Setting --local_rank conflicts with DDP mode'
+    assert not (RANK != -1 and opt.rank and opt.rank != -1), 'Setting --rank conflicts with DDP mode'
+    assert not (LOCAL_RANK != -1 and opt.local_rank and opt.local_rank != -1), 'Setting --local_rank conflicts with DDP mode'
     assert (opt.local_rank is not None and opt.rank is not None) or (opt.local_rank is None and opt.rank is None), \
         "Either both opt.local_rank and opt.rank must be set or none of them."
     if opt.local_rank and opt.rank:
