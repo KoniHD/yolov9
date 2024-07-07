@@ -521,6 +521,13 @@ def main(opt, callbacks=Callbacks()):
         opt.save_dir = str(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))
 
     # DDP mode
+    # assert not (opt.rank and RANK != -1), 'Setting --rank conflicts with DDP mode'
+    # assert not (opt.local_rank and LOCAL_RANK != -1), 'Setting --local_rank conflicts with DDP mode'
+    # assert (opt.local_rank is not None and opt.rank is not None) or (opt.local_rank is None and opt.rank is None), \
+    #     "Either both opt.local_rank and opt.rank must be set or none of them."
+    # if opt.local_rank and opt.rank:
+    #     LOCAL_RANK = opt.local_rank
+    #     RANK = opt.rank
     device = select_device(opt.device, batch_size=opt.batch_size)
     if LOCAL_RANK != -1:
         msg = 'is not compatible with YOLO Multi-GPU DDP training'
@@ -642,9 +649,4 @@ def run(**kwargs):
 
 if __name__ == "__main__":
     opt = parse_opt()
-    # assert (opt.local_rank is not None and opt.rank is not None) or (opt.local_rank is None and opt.rank is None), \
-    #     "Either both opt.local_rank and opt.rank must be set or none of them."
-    # if opt.local_rank and opt.rank:
-    #     LOCAL_RANK = opt.local_rank
-    #     RANK = opt.rank
     main(opt)
