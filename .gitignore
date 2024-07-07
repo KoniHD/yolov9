@@ -5,6 +5,7 @@ InstancesIn_train.txt
 InstancesIn_val.txt
 InstancesIn_test.txt
 .mypy_cache
+..ipynb_checkpoints
 .idx
 .vscode
 .fleet
@@ -15,3 +16,4 @@ InstancesIn_test.txt
 runs
 __pycache__
 venv
+*-dup*
