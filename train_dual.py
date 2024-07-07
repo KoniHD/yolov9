@@ -472,9 +472,8 @@ def parse_opt(known=False):
     parser.add_argument('--freeze', nargs='+', type=int, default=[0], help='Freeze layers: backbone=10, first3=0 1 2')
     parser.add_argument('--save-period', type=int, default=-1, help='Save checkpoint every x epochs (disabled if < 1)')
     parser.add_argument('--seed', type=int, default=0, help='Global training seed')
-    # parser.add_argument('--local_rank', type=int, nargs='?', const=-1, help='DANGERZONE! Manual override LOCAL_RANK env var')
-    # parser.add_argument('--rank', type=int, nargs='?', const=-1, help='DANGERZONE! Manual override RANK env var')
-    parser.add_argument('--local_rank', type=int, default=-1, help='Automatic DDP Multi-GPU argument, do not modify')
+    parser.add_argument('--local_rank', type=int, nargs='?', const=-1, help='DANGERZONE! Manual override LOCAL_RANK env var. Not compatible with DDP mode.')
+    parser.add_argument('--rank', type=int, nargs='?', const=-1, help='DANGERZONE! Manual override RANK env var. Not compatible with DDP mode.')
     parser.add_argument('--min-items', type=int, default=0, help='Experimental')
     parser.add_argument('--close-mosaic', type=int, default=0, help='Experimental') # Removes mosaic from last X epochs
 
@@ -488,6 +487,14 @@ def parse_opt(known=False):
 
 
 def main(opt, callbacks=Callbacks()):
+    global RANK, LOCAL_RANK
+    assert not (opt.rank and RANK != -1), 'Setting --rank conflicts with DDP mode'
+    assert not (opt.local_rank and LOCAL_RANK != -1), 'Setting --local_rank conflicts with DDP mode'
+    assert (opt.local_rank is not None and opt.rank is not None) or (opt.local_rank is None and opt.rank is None), \
+        "Either both opt.local_rank and opt.rank must be set or none of them."
+    if opt.local_rank and opt.rank:
+        LOCAL_RANK = opt.local_rank
+        RANK = opt.rank
     # Checks
     if RANK in {-1, 0}:
         print_args(vars(opt))
@@ -521,13 +528,6 @@ def main(opt, callbacks=Callbacks()):
         opt.save_dir = str(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))
 
     # DDP mode
-    # assert not (opt.rank and RANK != -1), 'Setting --rank conflicts with DDP mode'
-    # assert not (opt.local_rank and LOCAL_RANK != -1), 'Setting --local_rank conflicts with DDP mode'
-    # assert (opt.local_rank is not None and opt.rank is not None) or (opt.local_rank is None and opt.rank is None), \
-    #     "Either both opt.local_rank and opt.rank must be set or none of them."
-    # if opt.local_rank and opt.rank:
-    #     LOCAL_RANK = opt.local_rank
-    #     RANK = opt.rank
     device = select_device(opt.device, batch_size=opt.batch_size)
     if LOCAL_RANK != -1:
         msg = 'is not compatible with YOLO Multi-GPU DDP training'
@@ -542,6 +542,7 @@ def main(opt, callbacks=Callbacks()):
 
     # Train
     if not opt.evolve:
+        LOGGER.info(f"\n---\nLOCAL_RANK={LOCAL_RANK}, RANK={RANK}, WORLD_SIZE={WORLD_SIZE}\n---\n")
         train(opt.hyp, opt, device, callbacks)
 
     # Evolve hyperparameters (optional)
