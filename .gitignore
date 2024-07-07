@@ -5,7 +5,7 @@ InstancesIn_train.txt
 InstancesIn_val.txt
 InstancesIn_test.txt
 .mypy_cache
-..ipynb_checkpoints
+.ipynb_checkpoints
 .idx
 .vscode
 .fleet
