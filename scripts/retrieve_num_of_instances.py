@@ -47,6 +47,17 @@ def get_filenames_of_id(dir, subdir, classId):
 
     return len(file_list), numOfInstances
 
+
+def num_instances(dir, classId):
+    numInstances = 0
+    for file in os.listdir(dir):
+        with open(os.path.join(dir, file), 'r') as f:
+            for line in f:
+                data = line.strip().split()
+                if int(data[0]) in classId:
+                    numInstances += 1
+    return numInstances
+
 def to_set(arg):
     return set(map(lambda x: int(x.strip()), arg.split(',')))
 
@@ -57,6 +68,7 @@ def parse_args():
     parser.add_argument('--dir', '-d', type=str, help='Directory path to label folder', default='/content/yolov9/loco')
     parser.add_argument('--class-id', '--id', type=to_set, help='Comma-seperated list of Class IDs to be searched. \
                         If none is given all classes will be displayed.')
+    parser.add_argument('--num-instances', action='store_true', help='If set, the num instances will be searched instead of num images')
     args = parser.parse_args()
     return args
 
@@ -65,33 +77,38 @@ if __name__ == "__main__":
 
     if not os.path.exists(arg.dir):
         raise FileNotFoundError(f"Directory {arg.dir} does not exist")
-    if arg.classId and not all(isinstance(i, int) and 0<=i and i<=4 for i in arg.classId):
-        raise ValueError(f"Class ID {arg.classId} is not valid. Valid IDs are 0, 1, 2, 3, 4.")
+    if arg.class_id and not all(isinstance(i, int) and 0<=i and i<=4 for i in arg.class_id):
+        raise ValueError(f"Class ID {arg.class_id} is not valid. Valid IDs are 0, 1, 2, 3, 4.")
     
     numOfInstances = 0
     
+    if arg.num_instances:
+        numOfInstances = num_instances(os.path.abspath(arg.dir), arg.class_id)
+        print(f"Total number of instances of category {arg.class_id} is {numOfInstances}.")
+        exit(0)
+    
     if os.path.exists(os.path.join(arg.dir, 'train')):
-        numOfImages, numOfInstancesTrain = get_filenames_of_id(os.path.abspath(arg.dir), 'train', arg.classId)
+        numOfImages, numOfInstancesTrain = get_filenames_of_id(os.path.abspath(arg.dir), 'train', arg.class_id)
         numOfInstances += numOfInstancesTrain
-        if arg.classId is not None:
-            print(f"There are {numOfImages} images containing an object of category {arg.classId} in the train dataset." +
+        if arg.class_id is not None:
+            print(f"There are {numOfImages} images containing an object of category {arg.class_id} in the train dataset." +
                   " The image_files are located in the file InstancesIn_train.txt.")
         else:
             print(f"There are {numOfImages} images in the train dataset containing an annotated object.")
     if os.path.exists(os.path.join(arg.dir, 'val')):
-        numOfImages, numOfInstancesVal = get_filenames_of_id(os.path.abspath(arg.dir), 'val', arg.classId)
+        numOfImages, numOfInstancesVal = get_filenames_of_id(os.path.abspath(arg.dir), 'val', arg.class_id)
         numOfInstances += numOfInstancesVal
-        if arg.classId is not None:
-            print(f"There are {numOfImages} images containing an object of category {arg.classId} in the val dataset." +
+        if arg.class_id is not None:
+            print(f"There are {numOfImages} images containing an object of category {arg.class_id} in the val dataset." +
                   " The image_files are located in the file InstancesIn_val.txt.")
         else:
             print(f"There are {numOfImages} images in the val dataset containing an annotated object.")
     if os.path.exists(os.path.join(arg.dir, 'test')):
-        numOfImages, numOfInstancesTest = get_filenames_of_id(os.path.abspath(arg.dir), 'test', arg.classId)
+        numOfImages, numOfInstancesTest = get_filenames_of_id(os.path.abspath(arg.dir), 'test', arg.class_id)
         numOfInstances += numOfInstancesTest
-        if arg.classId is not None:
-            print(f"There are {numOfImages} images containing an object of category {arg.classId} in the test dataset." +
+        if arg.class_id is not None:
+            print(f"There are {numOfImages} images containing an object of category {arg.class_id} in the test dataset." +
                   " The image_files are located in the file InstancesIn_test.txt.")
         else:
             print(f"There are {numOfImages} images in the test dataset containing an annotated object.")
-    print(f"Total number of images of category {arg.classId} is {numOfInstances}")
+    print(f"Total number of images of category {arg.class_id} is {numOfInstances}")
