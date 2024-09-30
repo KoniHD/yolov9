@@ -17,3 +17,6 @@ runs
 __pycache__
 venv
 *-dup*
+yolov9/LICENSE.md
+yolov9/README.md
+yolov9/requirements.txt
